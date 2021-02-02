@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN yarn install
+RUN yarn install && npx browserslist@latest --update-db
 
 EXPOSE 3000
 
