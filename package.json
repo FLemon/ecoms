@@ -1,5 +1,5 @@
 {
-  "name": "next-netlify-starter",
+  "name": "ecoms",
   "version": "0.2.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,10 @@
     "export": "next export"
   },
   "dependencies": {
+    "@chakra-ui/core": "^0.8.0",
+    "@emotion/core": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
+    "emotion-theming": "^11.0.0",
     "next": "10.0.4",
     "react": "17.0.1",
     "react-dom": "17.0.1"
