@@ -1,12 +1,12 @@
-import { Image } from "@chakra-ui/react"
-
 import Layout from '@components/Layout'
 import DataClient from '@components/DataClient'
 
-export default function Home(props) {
+export default function Contact(props) {
   return (
     <Layout {...props}>
-
+      <p className="description">
+        contact us
+      </p>
     </Layout>
   )
 }

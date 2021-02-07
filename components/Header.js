@@ -1,23 +1,40 @@
 import { useState } from "react"
-import Logo from "@components/Logo"
-import { Stack, Box, Flex, Link, Text } from "@chakra-ui/react"
 import { IoClose, IoMenu } from "react-icons/io5";
 
+import { useRouter } from 'next/router'
+import NextLink from 'next/link'
+
+import { Stack, Box, Flex, Text, Button, Link } from "@chakra-ui/react"
+
+import Logo from "@components/Logo"
+
 const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
+  const { asPath } = useRouter()
+  let myLink
+  const myText = (
+    <Text display="block" {...rest}>
+      {children}
+    </Text>
+  )
+
+  if (asPath === to) {
+    myLink = <Button colorScheme="teal">{myText}</Button>
+  } else {
+    myLink = <Link>{myText}</Link>
+  }
+
   return (
-    <Link href={to}>
-      <Text display="block" {...rest}>
-        {children}
-      </Text>
-    </Link>
+    <NextLink href={to}>
+    {myLink}
+    </NextLink>
   )
 }
 
-const MenuLinks = ({ isOpen }) => {
+const MenuLinks = ({ isOpen, categories }) => {
   return (
     <Box
-    display={{ base: isOpen ? "block" : "none", md: "block" }}
-    flexBasis={{ base: "100%", md: "auto" }}
+      display={{ base: isOpen ? "block" : "none", md: "block" }}
+      flexBasis={{ base: "100%", md: "auto" }}
     >
       <Stack
         spacing={8}
@@ -27,7 +44,10 @@ const MenuLinks = ({ isOpen }) => {
         pt={[4, 4, 0, 0]}
       >
         <MenuItem to="/">Home</MenuItem>
-        <MenuItem to="/">Contact</MenuItem>
+        {categories.map(cat => (
+          <MenuItem key={cat.slug} to={`/shop/${cat.slug}`}>{cat.name_cn}</MenuItem>
+        ))}
+        <MenuItem to="/contact">Contact</MenuItem>
       </Stack>
     </Box>
   )
@@ -49,7 +69,6 @@ const NavBarContainer = ({ children, ...props }) => {
       justify="space-between"
       wrap="wrap"
       w="100%"
-      mb={8}
       p={8}
       bg={["primary.500", "primary.500", "transparent", "transparent"]}
       {...props}
@@ -66,11 +85,9 @@ export default function Header(props) {
 
   return(
     <NavBarContainer {...props}>
-      <Logo
-        w="100px"
-      />
+      <Logo w="150px"/>
       <MenuToggle toggle={toggle} isOpen={isOpen} />
-      <MenuLinks isOpen={isOpen} />
+      <MenuLinks isOpen={isOpen} categories={props.categories} />
     </NavBarContainer>
   )
 }
