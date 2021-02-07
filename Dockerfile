@@ -4,8 +4,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN yarn install && npx browserslist@latest --update-db
+RUN npx browserslist@latest --update-db && npm install
 
 EXPOSE 3000
 
-CMD ["yarn", "dev"]
+CMD ["npm", "run", "dev"]
