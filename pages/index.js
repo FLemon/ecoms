@@ -6,7 +6,7 @@ import DataClient from '@components/DataClient'
 export default function Home(props) {
   return (
     <Layout {...props}>
-
+      <p>Home</p>
     </Layout>
   )
 }

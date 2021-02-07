@@ -19,8 +19,8 @@ const Product = ({ product }) => {
       <LinkBox onClick={onOpen} boxShadow="2xl" p="6" rounded="md" bg="white">
         <Image src={imageSrc} fallbackSrc={fallbackImage}/>
         <LinkOverlay href="#">
-          <Heading size="md" my="2">{product.name_cn}</Heading>
-          <Text fontsize="3xl">{product.slug}</Text>
+          <Text fontSize="3xl" color="black">{product.name_cn}</Text>
+          <Text fontSize="1xl">{product.slug}</Text>
         </LinkOverlay>
       </LinkBox>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>

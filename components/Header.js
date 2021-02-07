@@ -17,7 +17,7 @@ const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
     </Text>
   )
 
-  if (asPath === to) {
+  if (asPath.match(new RegExp(`^${to}(\/.*)?$`))) {
     myLink = <Button colorScheme="teal">{myText}</Button>
   } else {
     myLink = <Link>{myText}</Link>
