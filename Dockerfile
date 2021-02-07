@@ -1,10 +1,10 @@
-FROM node:15.7.0-alpine3.10
+FROM node:12
 
 WORKDIR /app
 
 COPY . .
 
-RUN npx browserslist@latest --update-db && npm install
+RUN npm install
 
 EXPOSE 3000
 
