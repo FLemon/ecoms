@@ -2,7 +2,8 @@ import { ApolloClient, InMemoryCache, gql, makeVar } from '@apollo/client';
 
 const client = new ApolloClient({
   uri: `${process.env.API_PROTOCOL}://${process.env.API_HOST}/graphql`,
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  onError: (e) => { console.log(JSON.Stringify(e))}
 })
 
 const getCategories = async () => {
@@ -19,20 +20,51 @@ const getCategories = async () => {
   return data.categories
 }
 
-const getCategoryProducts = async (category) => {
+const getCategoryProducts = async (categorySlug) => {
   const { data } = await client.query({
     query: gql`
-      query GetProducts($category: String!){
-        products(where: { category: { slug: $category }}) {
+      query GetProducts($categorySlug: String!) {
+        products(where: { category: { slug: $categorySlug }}) {
           name_cn
           slug
           images { url }
+          price_in_china
+          price_in_uk
         }
       }
     `,
-    variables: { category }
+    variables: { categorySlug }
   })
   return data.products
 }
 
-export default { getCategories, getCategoryProducts }
+const getProductVariants = async (productSlug) => {
+  if (productSlug) {
+    const { data } = await client.query({
+      query: gql`
+        query GetProductVariants($productSlug: String!) {
+          productVariants(where: { product: { slug: $productSlug } }) {
+            slug
+            images { url }
+            price_in_china
+            price_in_uk
+            stock
+            variants {
+              name_cn
+              slug
+              variant_type {
+                name_cn
+                slug
+              }
+            }
+          }
+        }
+      `,
+      variables: { productSlug }
+    })
+    return data.productVariants
+  }
+  return null
+}
+
+export default { getCategories, getCategoryProducts, getProductVariants }

@@ -1,79 +1,54 @@
 import { useRouter } from 'next/router'
-import {
-  Heading,
-  Button, Text, Center, LinkBox, LinkOverlay, Box, Spacer, SimpleGrid, Image, useDisclosure,
-  Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
-} from "@chakra-ui/react"
+import { SimpleGrid } from "@chakra-ui/react"
+import { RiMoneyCnyCircleLine } from "react-icons/ri"
 
 import Layout from '@components/Layout'
 import DataClient from '@components/DataClient'
-
-const Product = ({ product }) => {
-  const fallbackImage = "/product-fallback.jpeg"
-  const imageSrc = product.images[0] ? product.images[0].url : fallbackImage
-
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-  return (
-    <>
-      <LinkBox onClick={onOpen} boxShadow="2xl" p="6" rounded="md" bg="white">
-        <Image src={imageSrc} fallbackSrc={fallbackImage}/>
-        <LinkOverlay href="#">
-          <Text fontSize="3xl" color="black">{product.name_cn}</Text>
-          <Text fontSize="1xl">{product.slug}</Text>
-        </LinkOverlay>
-      </LinkBox>
-      <Modal onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalCloseButton />
-          <ModalBody>
-            <Image src={imageSrc} fallbackSrc={fallbackImage}/>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
-  )
-}
+import ProductList from '@components/ProductList'
+import ProductDetails from '@components/ProductDetails'
 
 export default function Shop(props) {
-  const router = useRouter()
-  const { slug } = router.query
+  const { query } = useRouter()
+  const [categorySlug, productSlug] = query.slug
+
+  const PageComponent = () => {
+    if (productSlug) {
+      const product = props.products.filter(obj => (obj.slug === productSlug))[0]
+      return <ProductDetails product={product} categorySlug={categorySlug} productVariants={props.productVariants} />
+    }
+    return <ProductList products={props.products} categorySlug={categorySlug} />
+  }
 
   return (
     <Layout {...props}>
-      <SimpleGrid
-        bg="gray.50"
-        columns={{sm: 2, md: 4}}
-        spacing="8"
-        p="10"
-        textAlign="center"
-        rounded="lg"
-        color="gray.400"
-      >
-        {props.products.map(product => (
-          <Product key={product.slug} product={product}></Product>
-        ))}
-      </SimpleGrid>
+      <PageComponent />
     </Layout>
   )
 }
 
 export async function getStaticProps({ params }) {
-  const category = params.slug[0]
+  const [categorySlug, productSlug] = params.slug
+
   return {
     props: {
       categories: await DataClient.getCategories(),
-      products: await DataClient.getCategoryProducts(category)
+      products: await DataClient.getCategoryProducts(categorySlug),
+      productVariants: await DataClient.getProductVariants(productSlug)
     }
   }
 }
 
 export async function getStaticPaths() {
+  let paths = []
   const categories = await DataClient.getCategories()
-  const paths = categories.map(cat => (
-    { params: { slug: [cat.slug] } }
-  ))
+  await Promise.all(categories.map(async cat => {
+    let productPaths = []
+    paths.push({ params: { slug: [cat.slug] } })
+    const products = await DataClient.getCategoryProducts(cat.slug)
+    productPaths = products.map(pro => {
+      paths.push({ params: { slug: [cat.slug, pro.slug] } })
+    })
+  }))
   return {
     paths,
     fallback: false
