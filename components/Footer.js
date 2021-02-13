@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <>
       <footer className={styles.footer}>
-        <img src="/kissy-logo.svg" alt="Kissy Logo" className={styles.logo} />•AMY UK
+        <img src="/kissy-logo.svg" alt="Kissy Logo" className={styles.logo} />@UK
       </footer>
     </>
   )

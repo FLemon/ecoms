@@ -46,8 +46,10 @@ const getProductVariants = async (productSlug) => {
           productVariants(where: { product: { slug: $productSlug } }) {
             slug
             images { url }
-            price_in_china
-            price_in_uk
+            cyn_in_china
+            cyn_in_uk
+            gbp_in_china
+            gbp_in_uk
             stock
             variants {
               name_cn

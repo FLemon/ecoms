@@ -3,7 +3,7 @@ export default function Category(props) {
   return (
     <div className="container">
       <Head>
-        <title>Kissy如吻@•AMY UK</title>
+        <title>Kissy如吻 UK</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
