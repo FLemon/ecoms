@@ -37,8 +37,8 @@ const MenuLinks = ({ isOpen, categories }) => {
         <MenuItem to="/">Home</MenuItem>
         {categories.map(cat => (
           <MenuItem key={cat.slug} to={`/shop/${cat.slug}`}>
-            <Text fontSize="lg">{S(cat.slug).humanize().titleCase().s}</Text>
-            <Text fontSize="sm">({cat.name_cn})</Text>
+            <Center><Text fontSize="lg">{S(cat.slug).humanize().titleCase().s}</Text></Center>
+            <Center><Text fontSize="sm">({cat.name_cn})</Text></Center>
           </MenuItem>
         ))}
         <MenuItem to="/contact">Contact</MenuItem>
