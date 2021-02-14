@@ -28,8 +28,10 @@ const getCategoryProducts = async (categorySlug) => {
           name_cn
           slug
           images { url }
-          price_in_china
-          price_in_uk
+          cyn_in_china
+          cyn_in_uk
+          gbp_in_china
+          gbp_in_uk
         }
       }
     `,
@@ -50,7 +52,8 @@ const getProductVariants = async (productSlug) => {
             cyn_in_uk
             gbp_in_china
             gbp_in_uk
-            stock
+            stock_level
+            limited_edition
             variants {
               name_cn
               slug

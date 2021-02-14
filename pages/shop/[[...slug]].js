@@ -8,15 +8,14 @@ import ProductList from '@components/ProductList'
 import ProductDetails from '@components/ProductDetails'
 
 export default function Shop(props) {
-  const { query } = useRouter()
-  const [categorySlug, productSlug] = query.slug
+  const { categorySlug, productSlug, products, productVariants } = props
 
   const PageComponent = () => {
     if (productSlug) {
-      const product = props.products.filter(obj => (obj.slug === productSlug))[0]
-      return <ProductDetails product={product} categorySlug={categorySlug} productVariants={props.productVariants} />
+      const product = products.filter(obj => (obj.slug === productSlug))[0]
+      return <ProductDetails product={product} categorySlug={categorySlug} productVariants={productVariants} />
     }
-    return <ProductList products={props.products} categorySlug={categorySlug} />
+    return <ProductList products={products} categorySlug={categorySlug} />
   }
 
   return (
@@ -31,6 +30,8 @@ export async function getStaticProps({ params }) {
 
   return {
     props: {
+      categorySlug,
+      productSlug: productSlug || null,
       categories: await DataClient.getCategories(),
       products: await DataClient.getCategoryProducts(categorySlug),
       productVariants: await DataClient.getProductVariants(productSlug)

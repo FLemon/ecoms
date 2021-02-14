@@ -1,15 +1,14 @@
 import { useState } from "react"
 import { IoClose, IoMenu } from "react-icons/io5";
 
-import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 
-import { Stack, Box, Flex, Text, Button, Link } from "@chakra-ui/react"
+import { Divider, Spacer, SimpleGrid, Heading, Center, Stack, Box, Flex, Text, Button, Link } from "@chakra-ui/react"
+import S from "String"
 
 import Logo from "@components/Logo"
 
 const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
-  const { asPath } = useRouter()
   let myLink
   const myText = (
     <Text display="block" {...rest}>
@@ -17,16 +16,8 @@ const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
     </Text>
   )
 
-  if (asPath.match(new RegExp(`^${to}(\/.*)?$`))) {
-    myLink = <Button colorScheme="teal">{myText}</Button>
-  } else {
-    myLink = <Link>{myText}</Link>
-  }
-
   return (
-    <NextLink href={to}>
-    {myLink}
-    </NextLink>
+    <NextLink href={to}><Link>{myText}</Link></NextLink>
   )
 }
 
@@ -45,7 +36,10 @@ const MenuLinks = ({ isOpen, categories }) => {
       >
         <MenuItem to="/">Home</MenuItem>
         {categories.map(cat => (
-          <MenuItem key={cat.slug} to={`/shop/${cat.slug}`}>{cat.name_cn}</MenuItem>
+          <MenuItem key={cat.slug} to={`/shop/${cat.slug}`}>
+            <Text fontSize="lg">{S(cat.slug).humanize().titleCase().s}</Text>
+            <Text fontSize="sm">({cat.name_cn})</Text>
+          </MenuItem>
         ))}
         <MenuItem to="/contact">Contact</MenuItem>
       </Stack>
@@ -78,16 +72,66 @@ const NavBarContainer = ({ children, ...props }) => {
   )
 }
 
+const Breadcrumbs = (props) => {
+  const { categorySlug, productSlug } = props
+
+  let ProductCrumb = null
+
+  if (productSlug) {
+    ProductCrumb = (
+      <>
+        /
+        <Spacer />
+        <Link href={`/shop/${categorySlug}/${productSlug}`}>
+          {S(productSlug).humanize().titleCase().s}
+        </Link>
+      </>
+    )
+  }
+
+  const CategoryCrumb = (
+    <>
+      /
+      <Spacer />
+      <Link href={`/shop/${categorySlug}`}>
+        {S(categorySlug).humanize().titleCase().s}
+      </Link>
+    </>
+  )
+
+  return (
+    <Center maxW={200}>
+      HOME
+      <Spacer />
+      {CategoryCrumb}
+      <Spacer />
+      {ProductCrumb}
+    </Center>
+  )
+}
+
+const Banner = (props) => {
+  return (
+    <SimpleGrid columns={4}>
+      <Spacer />
+      <Breadcrumbs {...props}/>
+    </SimpleGrid>
+  )
+}
 export default function Header(props) {
   const [isOpen, setIsOpen] = useState(false)
-
   const toggle = () => setIsOpen(!isOpen)
 
   return(
-    <NavBarContainer {...props}>
-      <Logo w="150px"/>
-      <MenuToggle toggle={toggle} isOpen={isOpen} />
-      <MenuLinks isOpen={isOpen} categories={props.categories} />
-    </NavBarContainer>
+    <SimpleGrid columns={1}>
+      <NavBarContainer {...props}>
+        <Logo w="150px"/>
+        <MenuToggle toggle={toggle} isOpen={isOpen} />
+        <MenuLinks isOpen={isOpen} categories={props.categories} />
+      </NavBarContainer>
+      <Divider orientation="horizontal" />
+      <Banner {...props}/>
+      <Divider orientation="horizontal" />
+    </SimpleGrid>
   )
 }
