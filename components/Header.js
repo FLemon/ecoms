@@ -1,25 +1,10 @@
 import { useState } from "react"
 import { IoClose, IoMenu } from "react-icons/io5";
 
-import NextLink from 'next/link'
-
 import { Divider, Spacer, SimpleGrid, Heading, Center, Stack, Box, Flex, Text, Button, Link } from "@chakra-ui/react"
 import S from "String"
 
 import Logo from "@components/Logo"
-
-const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
-  let myLink
-  const myText = (
-    <Text display="block" {...rest}>
-      {children}
-    </Text>
-  )
-
-  return (
-    <NextLink href={to}><Link>{myText}</Link></NextLink>
-  )
-}
 
 const MenuLinks = ({ isOpen, categories }) => {
   return (
@@ -34,14 +19,14 @@ const MenuLinks = ({ isOpen, categories }) => {
         direction={["column", "row", "row", "row"]}
         pt={[4, 4, 0, 0]}
       >
-        <MenuItem to="/">Home</MenuItem>
+        <Link href="/">Home</Link>
         {categories.map(cat => (
-          <MenuItem key={cat.slug} to={`/shop/${cat.slug}`}>
+          <Link key={cat.slug} href={`/shop/${cat.slug}`}>
             <Center><Text fontSize="lg">{S(cat.slug).humanize().titleCase().s}</Text></Center>
             <Center><Text fontSize="sm">({cat.name_cn})</Text></Center>
-          </MenuItem>
+          </Link>
         ))}
-        <MenuItem to="/contact">Contact</MenuItem>
+        <Link href="/contact">Contact</Link>
       </Stack>
     </Box>
   )
@@ -55,7 +40,7 @@ const MenuToggle = ({ toggle, isOpen }) => {
   )
 }
 
-const NavBarContainer = ({ children, ...props }) => {
+const NavBarContainer = ({ children }) => {
   return (
     <Flex
       as="nav"
@@ -65,20 +50,27 @@ const NavBarContainer = ({ children, ...props }) => {
       w="100%"
       p={8}
       bg={["primary.500", "primary.500", "transparent", "transparent"]}
-      {...props}
     >
       {children}
     </Flex>
   )
 }
 
-const Breadcrumbs = (props) => {
-  const { categorySlug, productSlug } = props
+const CategoryCrumb = ({categorySlug}) => {
+  return (
+    <>
+      /
+      <Spacer />
+      <Link href={`/shop/${categorySlug}`}>
+        {S(categorySlug).humanize().titleCase().s}
+      </Link>
+    </>
+  )
+}
 
-  let ProductCrumb = null
-
+const ProductCrumb = ({productSlug}) => {
   if (productSlug) {
-    ProductCrumb = (
+    return (
       <>
         /
         <Spacer />
@@ -88,33 +80,20 @@ const Breadcrumbs = (props) => {
       </>
     )
   }
-
-  const CategoryCrumb = (
-    <>
-      /
-      <Spacer />
-      <Link href={`/shop/${categorySlug}`}>
-        {S(categorySlug).humanize().titleCase().s}
-      </Link>
-    </>
-  )
-
-  return (
-    <Center maxW={200}>
-      HOME
-      <Spacer />
-      {CategoryCrumb}
-      <Spacer />
-      {ProductCrumb}
-    </Center>
-  )
+  return <></>
 }
 
-const Banner = (props) => {
+const Banner = ({categorySlug, productSlug}) => {
   return (
     <SimpleGrid columns={4}>
       <Spacer />
-      <Breadcrumbs {...props}/>
+      <Center maxW={200}>
+        HOME
+        <Spacer />
+        <CategoryCrumb categorySlug={categorySlug}/>
+        <Spacer />
+        <ProductCrumb productSlug={productSlug}/>
+      </Center>
     </SimpleGrid>
   )
 }
@@ -124,13 +103,13 @@ export default function Header(props) {
 
   return(
     <SimpleGrid columns={1}>
-      <NavBarContainer {...props}>
+      <NavBarContainer>
         <Logo w="150px"/>
         <MenuToggle toggle={toggle} isOpen={isOpen} />
         <MenuLinks isOpen={isOpen} categories={props.categories} />
       </NavBarContainer>
       <Divider orientation="horizontal" />
-      <Banner {...props}/>
+      <Banner categorySlug={props.categorySlug} productSlug={props.productSlug} />
       <Divider orientation="horizontal" />
     </SimpleGrid>
   )

@@ -72,4 +72,18 @@ const getProductVariants = async (productSlug) => {
   return null
 }
 
-export default { getCategories, getCategoryProducts, getProductVariants }
+const getVariantTypes = async () => {
+  const { data } = await client.query({
+    query: gql`
+      query {
+        variantTypes {
+          name_cn
+          slug
+        }
+      }
+    `
+  })
+  return data.variantTypes
+}
+
+export default { getCategories, getCategoryProducts, getProductVariants, getVariantTypes }

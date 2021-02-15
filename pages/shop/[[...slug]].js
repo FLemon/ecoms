@@ -8,14 +8,13 @@ import ProductList from '@components/ProductList'
 import ProductDetails from '@components/ProductDetails'
 
 export default function Shop(props) {
-  const { categorySlug, productSlug, products, productVariants } = props
-
+  const { categorySlug, productSlug } = props
   const PageComponent = () => {
     if (productSlug) {
-      const product = products.filter(obj => (obj.slug === productSlug))[0]
-      return <ProductDetails product={product} categorySlug={categorySlug} productVariants={productVariants} />
+      const product = props.products.filter(obj => (obj.slug === productSlug))[0]
+      return <ProductDetails product={product} {...props} />
     }
-    return <ProductList products={products} categorySlug={categorySlug} />
+    return <ProductList {...props} />
   }
 
   return (
@@ -34,7 +33,8 @@ export async function getStaticProps({ params }) {
       productSlug: productSlug || null,
       categories: await DataClient.getCategories(),
       products: await DataClient.getCategoryProducts(categorySlug),
-      productVariants: await DataClient.getProductVariants(productSlug)
+      productVariants: await DataClient.getProductVariants(productSlug),
+      variantTypes: await DataClient.getVariantTypes()
     }
   }
 }
