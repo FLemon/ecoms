@@ -27,38 +27,37 @@ export default function ProductDetails(props) {
   let dots = []
   product.images.forEach((image, index) => {
     sliders.push(<Slide key={index} index={index}><ImageWithZoom src={image.url}></ImageWithZoom></Slide>)
-    dots.push(<Dot key={index} slide={index}><Image maxW={50} src={image.url}></Image></Dot>)
+    dots.push(<Dot key={index} slide={index}><Center maxW={100}><Image src={image.url} /></Center></Dot>)
   })
 
   return (
-    <Flex>
-      <Spacer />
-      <Box maxW={600} p="6" rounded="md" bg="white">
-        <SimpleGrid columns={2} spacing="4">
-          <Box w={400}>
-            <CarouselProvider naturalSlideWidth={300} naturalSlideHeight={400} infinite={true}
-              visibleSlides={1} totalSlides={3} hasMasterSpinner lockOnWindowScroll>
-              <Slider>{sliders}</Slider>
-              <DotGroup>{dots}</DotGroup>
-            </CarouselProvider>
-          </Box>
-          <Grid w={400} templateRows="repeat(5, 1ft)" templateColumns="repeat(2, 1fr)" gap={4}>
-            {variantTypes.map(vt => (
-              <GridItem key={vt.slug} w="100%" rowSpan={1} colSpan={1}>
-                <FormControl isRequired maxW={200} id={vt.slug}>
-                  <FormLabel>{S(vt.slug).humanize().titleCase().s}</FormLabel>
-                  <Select placeholder={`Select ${vt.slug}`}>
-                    {variants[vt.slug].map(v => (
-                      <option key={v}>{S(v).humanize().titleCase().s}</option>
-                    ))}
-                  </Select>
-                </FormControl>
-              </GridItem>
-            ))}
-          </Grid>
-        </SimpleGrid>
-      </Box>
-      <Spacer />
-    </Flex>
+    <Center>
+      <SimpleGrid maxW={800} columns={{sm: 1, md: 2}} spacing="4" p={10}>
+        <Box maxW={400}>
+          <CarouselProvider naturalSlideWidth={300} naturalSlideHeight={400} infinite={true}
+            visibleSlides={1} totalSlides={3} hasMasterSpinner lockOnWindowScroll>
+            <Slider>{sliders}</Slider>
+            <DotGroup>
+              <Spacer />
+              <SimpleGrid columns={4} spacing={1}>
+                {dots}
+              </SimpleGrid>
+            </DotGroup>
+          </CarouselProvider>
+        </Box>
+        <Box maxW={400}>
+          {variantTypes.map(vt => (
+            <FormControl isRequired id={vt.slug}>
+              <FormLabel>{S(vt.slug).humanize().titleCase().s}</FormLabel>
+              <Select placeholder={`Select ${vt.slug}`}>
+                {variants[vt.slug].map(v => (
+                  <option key={v}>{S(v).humanize().titleCase().s}</option>
+                ))}
+              </Select>
+            </FormControl>
+          ))}
+        </Box>
+      </SimpleGrid>
+    </Center>
   )
 }

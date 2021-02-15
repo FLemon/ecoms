@@ -85,7 +85,7 @@ const ProductCrumb = ({categorySlug, productSlug}) => {
 
 const Banner = ({categorySlug, productSlug}) => {
   return (
-    <SimpleGrid columns={4}>
+    <SimpleGrid columns={{sm: 2, md:4}} p="4">
       <Spacer />
       <Center maxW={200}>
         HOME
