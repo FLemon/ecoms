@@ -68,7 +68,7 @@ const CategoryCrumb = ({categorySlug}) => {
   )
 }
 
-const ProductCrumb = ({productSlug}) => {
+const ProductCrumb = ({categorySlug, productSlug}) => {
   if (productSlug) {
     return (
       <>
@@ -92,7 +92,7 @@ const Banner = ({categorySlug, productSlug}) => {
         <Spacer />
         <CategoryCrumb categorySlug={categorySlug}/>
         <Spacer />
-        <ProductCrumb productSlug={productSlug}/>
+        <ProductCrumb categorySlug={categorySlug} productSlug={productSlug}/>
       </Center>
     </SimpleGrid>
   )

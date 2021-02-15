@@ -44,7 +44,7 @@ export default function ProductDetails(props) {
           </Box>
           <Grid w={400} templateRows="repeat(5, 1ft)" templateColumns="repeat(2, 1fr)" gap={4}>
             {variantTypes.map(vt => (
-              <GridItem w="100%" rowSpan={1} colSpan={1}>
+              <GridItem key={vt.slug} w="100%" rowSpan={1} colSpan={1}>
                 <FormControl isRequired maxW={200} id={vt.slug}>
                   <FormLabel>{S(vt.slug).humanize().titleCase().s}</FormLabel>
                   <Select placeholder={`Select ${vt.slug}`}>
