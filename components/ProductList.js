@@ -2,7 +2,7 @@ import {
   Text, Image, SimpleGrid, SpacerLink, LinkOverlay, Flex, Center,
   Spacer, Stat, StatLabel, StatNumber, StatHelpText, Box, Link
 } from "@chakra-ui/react"
-import S from "String"
+import S from "string"
 
 const Product = (props) => {
   const { categorySlug, product } = props

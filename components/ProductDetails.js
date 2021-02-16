@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 import {
   Center, GridItem, Grid, SimpleGrid, Flex, Spacer, Box, Image, FormControl, FormLabel, Select
 } from "@chakra-ui/react"
-import S from "String"
+import S from "string"
 import { CarouselContext, Dot, CarouselProvider, DotGroup, Slider, Slide, ButtonBack, ButtonNext, ImageWithZoom } from "pure-react-carousel"
 import "pure-react-carousel/dist/react-carousel.es.css"
 

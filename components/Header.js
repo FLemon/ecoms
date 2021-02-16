@@ -2,7 +2,7 @@ import { useState } from "react"
 import { IoClose, IoMenu } from "react-icons/io5";
 
 import { Divider, Spacer, SimpleGrid, Heading, Center, Stack, Box, Flex, Text, Button, Link } from "@chakra-ui/react"
-import S from "String"
+import S from "string"
 
 import Logo from "@components/Logo"
 
