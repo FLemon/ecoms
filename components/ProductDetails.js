@@ -10,8 +10,6 @@ const FormControls = ({variantType, variants}) => {
   //TODO: use product variants image to control slide
   const carouselContext = useContext(CarouselContext)
   const [currentSlide, setCurrentSlide] = useState(carouselContext.state.currentSlide)
-  console.log("currentSlide")
-  console.log(currentSlide)
 
   const selectSlide = (e) => {
     if (e.target.id === "colour") {
@@ -21,7 +19,7 @@ const FormControls = ({variantType, variants}) => {
   }
 
   return (
-    <FormControl key={variantType.slug} isRequired id={variantType.slug}>
+    <FormControl isRequired id={variantType.slug}>
       <FormLabel>{S(variantType.slug).humanize().titleCase().s}</FormLabel>
       <Select placeholder={`Select ${variantType.slug}`} onChange={selectSlide}>
         {variants[variantType.slug].map(v => (
@@ -59,7 +57,7 @@ export default function ProductDetails(props) {
 
   return (
     <CarouselProvider naturalSlideWidth={300} naturalSlideHeight={400} infinite={true}
-      visibleSlides={1} totalSlides={3} hasMasterSpinner lockOnWindowScroll>
+      visibleSlides={1} totalSlides={product.images.length} hasMasterSpinner lockOnWindowScroll>
       <Center>
         <SimpleGrid maxW={800} columns={{sm: 1, md: 2}} spacing="4" p={10}>
           <Box maxW={400}>
@@ -73,7 +71,7 @@ export default function ProductDetails(props) {
           </Box>
           <Box maxW={400}>
             {variantTypes.map(vt => (
-              <FormControls variantType={vt} variants={variants} />
+              <FormControls key={vt.slug} variantType={vt} variants={variants} />
             ))}
           </Box>
         </SimpleGrid>
