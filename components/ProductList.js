@@ -36,7 +36,7 @@ export default function ProductList(props) {
         <Spacer />
         {products.map(product => (
           <Product key={product.slug} categorySlug={categorySlug}
-            product={{image: product.productVariants[0].images[0], ...product}}/>
+            product={{image: product.product_variants[0].images[0], ...product}}/>
         ))}
         <Spacer />
       </SimpleGrid>

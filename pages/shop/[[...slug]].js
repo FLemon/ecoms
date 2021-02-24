@@ -7,6 +7,7 @@ import DataClient from '@components/DataClient'
 import ProductList from '@components/ProductList'
 import ProductDetails from '@components/ProductDetails'
 import ShopFront from '@components/ShopFront'
+import { CarouselProvider } from "pure-react-carousel"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
@@ -15,7 +16,19 @@ export default function Shop(props) {
   const PageComponent = () => {
     if (productSlug) {
       const product = props.products.filter(obj => (obj.slug === productSlug))[0]
-      return <ProductDetails product={product} productVariants={productVariants} {...props} />
+      const images = []
+      const slideIndex = {}
+      productVariants.forEach(pv => {
+        slideIndex[pv.colour.slug] = images.length
+        images.push(...pv.images)
+      })
+
+      return (
+        <CarouselProvider naturalSlideWidth={300} naturalSlideHeight={400} infinite={true}
+          visibleSlides={1} totalSlides={images.length} hasMasterSpinner lockOnWindowScroll>
+          <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />
+        </CarouselProvider>
+      )
     }
     if (categorySlug) {
       return <ProductList {...props} />
