@@ -11,20 +11,53 @@ import {
 import "pure-react-carousel/dist/react-carousel.es.css"
 import { useShoppingCart } from 'use-shopping-cart'
 
+const transformVariant = ({variant, size, product}) => {
+  const variantSize = size || "m"
+  const variantPrice = variant.gbp_in_uk || product.gbp_in_uk
+  return {
+    id: `${variant.slug}-${variantSize}`,
+    colour: variant.colour.slug,
+    size: variantSize,
+    sizes: ["s", "m", "l", "xl", "xxl", "xxxl"].filter(s => variant[s] > 0),
+    price: variantPrice
+  }
+}
+
 export default function ProductDetails(props) {
   const { slideIndex, images, product, productVariants } = props
-  const [currentVariant, setCurrentVariant] = useState({
-    id: `${productVariants[0]}-m`,
-    colour: productVariants[0].colour.slug,
-    size: "m",
-    price: productVariants[0].gbp_in_uk || product.gbp_in_uk
-  })
+  const [currentVariant, setCurrentVariant] = useState(transformVariant({
+    variant: productVariants[0],
+    product: product
+  }))
   const [colour, setColour] = useState(currentVariant.colour)
   const [size, setSize] = useState(currentVariant.size)
   const carouselContext = useContext(CarouselContext)
   const [currentSlide, setCurrentSlide] = useState(carouselContext.state.currentSlide)
-  carouselContext.setStoreState({ currentSlide: slideIndex[colour] })
   const { cartDetails, addItem, incrementItem, decrementItem } = useShoppingCart()
+
+  const colours = productVariants.map(pv => (pv.colour.slug))
+
+  useEffect(() => {
+    carouselContext.setStoreState({ currentSlide: slideIndex[colour] })
+
+    setCurrentVariant(transformVariant({
+      variant: productVariants.filter(pv => pv.colour.slug === colour)[0],
+      product: product,
+      size
+    }))
+  }, [colour])
+
+  useEffect(() => {
+    setCurrentVariant(transformVariant({
+      variant: productVariants.filter(pv => pv.colour.slug === colour)[0],
+      product: product,
+      size
+    }))
+  }, [size])
+
+  useEffect(() => {
+    console.log(currentVariant)
+  }, [currentVariant])
 
   const fallbackImage = "/product-fallback.jpeg"
   let sliders = []
@@ -52,28 +85,19 @@ export default function ProductDetails(props) {
   const dec = getDecrementButtonProps()
   const input = getInputProps({ isReadOnly: true })
 
-  const selectVariantSize = (e) => {
-    setSize(e.target.value)
-  }
-
   images.forEach((image, index) => {
     sliders.push(<Slide key={index} index={index}><ImageWithZoom src={image.url}></ImageWithZoom></Slide>)
     dots.push(<Dot key={index} slide={index}><Center maxW={100}><Image src={image.url} /></Center></Dot>)
   })
 
-  const FormControlColour = () => {
-    const selectColour = (e) => {
-      setColour(e.target.value)
-    }
-
-    const label = "colour"
+  const FormControls = ({type, value, options, onChange}) => {
     return (
-      <FormControl py={2} isRequired id={label}>
-        <FormLabel>{S(label).humanize().titleCase().s}</FormLabel>
-        <Select onChange={selectColour} value={colour}>
-          {productVariants.map(pv => (
-            <option key={pv.colour.slug} value={pv.colour.slug}>
-              {S(pv.colour.slug).humanize().titleCase().s}
+      <FormControl py={2} isRequired id={type}>
+        <FormLabel>{S(type).humanize().titleCase().s}</FormLabel>
+        <Select onChange={onChange} value={value}>
+          {options.map(v => (
+            <option key={v} value={v}>
+              {type === "colour" ? S(v).humanize().titleCase().s : v.toUpperCase()}
             </option>
           ))}
         </Select>
@@ -94,7 +118,8 @@ export default function ProductDetails(props) {
           </DotGroup>
         </Box>
         <Box maxW={400}>
-          <FormControlColour />
+          <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours}/>
+          <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes}/>
           <HStack spacing={4} py={2}>
             <Stat maxW={40}>
               <StatNumber color="black">£{currentVariant.price}</StatNumber>
