@@ -1,9 +1,11 @@
-import { ApolloClient, InMemoryCache, gql, makeVar } from '@apollo/client';
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
 const client = new ApolloClient({
   uri: `${process.env.API_PROTOCOL}://${process.env.API_HOST}/graphql`,
   cache: new InMemoryCache(),
-  onError: (e) => { console.log(JSON.Stringify(e))}
+  onError: (e) => {
+    console.log(JSON.Stringify(e))
+  }
 })
 
 const getCategories = async () => {
@@ -21,17 +23,20 @@ const getCategories = async () => {
 }
 
 const getCategoryProducts = async (categorySlug) => {
+  if (!categorySlug) {
+    return []
+  }
   const { data } = await client.query({
     query: gql`
       query GetProducts($categorySlug: String!) {
         products(where: { category: { slug: $categorySlug }}) {
-          name_cn
           slug
-          images { url }
-          cyn_in_china
-          cyn_in_uk
-          gbp_in_china
+          name_cn
           gbp_in_uk
+          product_variants(limit:1) {
+            colour { slug, name_cn },
+            images { url }
+          }
         }
       }
     `,
@@ -41,6 +46,9 @@ const getCategoryProducts = async (categorySlug) => {
 }
 
 const getProductVariants = async (productSlug) => {
+  if (!productSlug) {
+    return []
+  }
   if (productSlug) {
     const { data } = await client.query({
       query: gql`
@@ -48,20 +56,10 @@ const getProductVariants = async (productSlug) => {
           productVariants(where: { product: { slug: $productSlug } }) {
             slug
             images { url }
-            cyn_in_china
-            cyn_in_uk
-            gbp_in_china
+            colour { slug, name_cn }
             gbp_in_uk
-            stock_level
             limited_edition
-            variants {
-              name_cn
-              slug
-              variant_type {
-                name_cn
-                slug
-              }
-            }
+            s m l xl xxl xxl
           }
         }
       `,
@@ -72,18 +70,4 @@ const getProductVariants = async (productSlug) => {
   return null
 }
 
-const getVariantTypes = async () => {
-  const { data } = await client.query({
-    query: gql`
-      query {
-        variantTypes {
-          name_cn
-          slug
-        }
-      }
-    `
-  })
-  return data.variantTypes
-}
-
-export default { getCategories, getCategoryProducts, getProductVariants, getVariantTypes }
+export default { getCategories, getCategoryProducts, getProductVariants }

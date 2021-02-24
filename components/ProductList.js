@@ -7,7 +7,7 @@ import S from "string"
 const Product = (props) => {
   const { categorySlug, product } = props
   const fallbackImage = "/product-fallback.jpeg"
-  const imageSrc = product.images[0] ? product.images[0].url : fallbackImage
+  const imageSrc = product.image ? product.image.url : fallbackImage
 
   const productHref = `/shop/${categorySlug}/${product.slug}`
   return (
@@ -35,7 +35,8 @@ export default function ProductList(props) {
         p="10" textAlign="center" rounded="lg" color="gray.400">
         <Spacer />
         {products.map(product => (
-          <Product key={product.slug} categorySlug={categorySlug} product={product}></Product>
+          <Product key={product.slug} categorySlug={categorySlug}
+            product={{image: product.productVariants[0].images[0], ...product}}/>
         ))}
         <Spacer />
       </SimpleGrid>

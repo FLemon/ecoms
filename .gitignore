@@ -11,6 +11,8 @@
 # next.js
 /.next/
 /out/
+/out_publish/
+/out_functions/
 
 # production
 /build
@@ -28,3 +30,5 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+*/**/Icon$\\r
