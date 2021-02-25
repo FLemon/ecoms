@@ -116,7 +116,7 @@ const CheckoutAlert = () => {
   const checkoutSessionUrl = `/api/checkout_session/${stripeSessionId}`
   let alertStatus, alertMsg
   useEffect(() => {
-    if (alertStatus == "success") {
+    if (alertStatus === "success") {
       clearCart()
     }
   }, [alertStatus])
