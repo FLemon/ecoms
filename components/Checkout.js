@@ -4,7 +4,7 @@ import {
   Image, Stack, Input, HStack, useNumberInput, Text, AspectRatio, VStack, Center, Divider, Spacer,
   useDisclosure, Box, SimpleGrid, IconButton, Button, Flex, Heading, Stat, StatNumber, StatLabel,
   Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerFooter,
-  Link
+  Link, useColorModeValue, StatHelpText
 } from "@chakra-ui/react"
 import { useRouter } from 'next/router'
 import axios from "axios"
@@ -21,6 +21,16 @@ export default function Checkout(props) {
   } = useShoppingCart()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cartRef = useRef()
+
+  useEffect(() => {
+    if (cartCount > 0) {
+      const validateCart = async () => {
+        const response = await axios.post('/api/checkout?validate_only=true', cartDetails)
+        return response.data
+      }
+      validateCart()
+    }
+  }, [cartDetails])
 
   const toCheckout = async (e) => {
     const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
@@ -44,42 +54,55 @@ export default function Checkout(props) {
       <>
         <Flex>
           <Center><Image w="80px" src={item.image}/></Center>
-          <VStack maxH="150px" p={2}>
-            <Heading as="h3" size="md">{S(item.name).humanize().titleCase().s}</Heading>
-            <Stack>
-              <Text>Colour: {S(item.colour).humanize().titleCase().s}</Text>
-              <Text>Size: {item.size.toUpperCase()}</Text>
-              <HStack spacing="10px">
-                <Box onClick={() => incrementItem(item.id)} {...inc}><AddIcon size="1em" /></Box>
-                <Input h="30px" w="60px" {...input} value={variantQuantityInCart} suppressHydrationWarning />
-                <Box onClick={() => decrementItem(item.id)} {...dec} suppressHydrationWarning><RemoveIcon size="1em" /></Box>
-                <Stat size="xs">
-                  <StatNumber color="black">
-                    {formatCurrencyString({value: item.price, currency: item.currency})}
-                  </StatNumber>
-                </Stat>
+          <VStack p={2} spacing="4px">
+            <VStack w="200px" fontWeight="bold" spacing="2px" align="left" p={2}>
+              <Heading size="md">{S(item.name).humanize().titleCase().s}</Heading>
+              <HStack>
+                <Text fontSize="xs">Colour:</Text>
+                <Text fontSize="xs" align="left">{S(item.colour).humanize().titleCase().s}</Text>
               </HStack>
-            </Stack>
+              <HStack>
+                <Text fontSize="xs">Size:</Text>
+                <Text fontSize="xs">{item.size.toUpperCase()}</Text>
+              </HStack>
+            </VStack>
+            <HStack w="200px" spacing="2px">
+              <Box onClick={() => incrementItem(item.id)} {...inc}><AddIcon size="1.5em" /></Box>
+              <Input h="30px" w="50px" {...input} value={variantQuantityInCart} suppressHydrationWarning />
+              <Box onClick={() => decrementItem(item.id)} {...dec} suppressHydrationWarning><RemoveIcon size="1.5em" /></Box>
+              <Spacer />
+              <Stack spacing={0}>
+                <Text size="sm" color="black" align="right">
+                  {formatCurrencyString({value: item.price * variantQuantityInCart, currency: item.currency})}
+                </Text>
+                {variantQuantityInCart > 1 &&
+                  <Box fontSize="8pt" color="grey" align="right">
+                    {formatCurrencyString({value: item.price, currency: item.currency})} each
+                  </Box>
+                }
+              </Stack>
+            </HStack>
           </VStack>
         </Flex>
-        <Divider />
       </>
     )
   }
 
   return(
     <>
-      <IconButton ref={cartRef} onClick={onOpen} isRound size="md" icon={
-        <>
-          <IoCartOutline size="2em" />
-          <Box as="span" pos="absolute" top={0} right={0} display="inline-flex" alignItems="center" justifyContent="center"
-            px={2} py={1} fontSize="xs" fontWeight="bold" lineHeight="none" color="red.100" transform="translate(50%,-50%)"
-            bg="red.600" rounded="full" suppressHydrationWarning
-          >
-            {cartCount}
-          </Box>
-        </>
-      }>
+      <IconButton bg="" _hover={{ bg: useColorModeValue("red.300", "red.400") }} ref={cartRef} onClick={onOpen}
+        isRound size="md" icon={
+          <>
+            <IoCartOutline size="2em" />
+            <Box as="span" pos="absolute" top={0} right={0} display="inline-flex" alignItems="center" justifyContent="center"
+              px={2} py={1} fontSize="xs" fontWeight="bold" lineHeight="none" color="red.100" transform="translate(50%,-50%)"
+              bg="red.600" rounded="full" suppressHydrationWarning
+            >
+              {cartCount}
+            </Box>
+          </>
+        }
+      >
       </IconButton>
       <Drawer isOpen={isOpen} size="xs" placement="right" onClose={onClose} finalFocusRef={cartRef}>
         <DrawerOverlay>
@@ -88,11 +111,13 @@ export default function Checkout(props) {
             <DrawerHeader>
               <Text>My Basket<Link onClick={clearCart} p={4} as="samp" fontSize="xs">(clear)</Link></Text>
             </DrawerHeader>
+            <Divider />
 
-            <DrawerBody>
+            <DrawerBody px="12px">
               {Object.keys(cartDetails).map(id => <CartItem key={id} item={cartDetails[id]}/>)}
             </DrawerBody>
 
+            <Divider />
             <DrawerFooter>
               <Text px={4} fontSize="xl" color="black"><strong>Total: </strong>{formatCurrencyString({value: totalPrice, currency: "GBP"})}</Text>
               <Button onClick={toCheckout} color="blue" isDisabled={cartCount === 0}>Checkout</Button>

@@ -2,11 +2,11 @@ import { useContext, useState, useEffect } from 'react'
 import S from "string"
 import {
   Center, GridItem, Grid, SimpleGrid, Flex, Spacer, Box, Image, FormControl, FormLabel, Select,
-  Stat, StatNumber, Button, HStack, useNumberInput, Input, useColorModeValue, Heading
+  Stat, StatNumber, Button, HStack, useNumberInput, Input, useColorModeValue, Heading, Link, IconButton
 } from "@chakra-ui/react"
-import { IoAddCircleSharp as AddIcon, IoRemoveCircleSharp as RemoveIcon } from "react-icons/io5";
+import { IoAddOutline as AddIcon, IoRemoveOutline as RemoveIcon } from "react-icons/io5";
 import {
-  CarouselContext, Dot, DotGroup, Slider, Slide, ButtonBack, ButtonNext, ImageWithZoom
+  CarouselProvider, CarouselContext, Dot, DotGroup, Slider, Slide, ButtonBack, ButtonNext, ImageWithZoom
 } from "pure-react-carousel"
 import "pure-react-carousel/dist/react-carousel.es.css"
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
@@ -35,6 +35,7 @@ export default function ProductDetails(props) {
   const [colour, setColour] = useState(currentVariant.colour)
   const [size, setSize] = useState(currentVariant.size)
   const carouselContext = useContext(CarouselContext)
+  let subCarouselContext
   const [currentSlide, setCurrentSlide] = useState(carouselContext.state.currentSlide)
   const { cartDetails, addItem, incrementItem, decrementItem } = useShoppingCart()
 
@@ -108,20 +109,56 @@ export default function ProductDetails(props) {
     )
   }
 
+  const SubSlider = () => {
+    const subCarouselContext = useContext(CarouselContext)
+    useEffect(() => {
+      subCarouselContext.setStoreState({ currentSlide: slideIndex[colour] })
+    }, [colour])
+
+    const selectImage = (e) => {
+      carouselContext.setStoreState({ currentSlide: e.target.getAttribute("index") })
+    }
+
+    return (
+      <Slider>
+        {images.map((image, index) => (
+          <Link key={index}>
+            <Slide onClick={selectImage}>
+              <Center h="100%"><Image index={index} px="2px" src={image.url}/></Center>
+            </Slide>
+          </Link>
+        ))}
+      </Slider>
+    )
+  }
   return (
     <Center>
       <SimpleGrid maxW={800} columns={{sm: 1, md: 2}} spacing="4" p={10}>
         <Box maxW={400}>
-          <Slider>{sliders}</Slider>
-          <DotGroup>
-            <Spacer />
-            <SimpleGrid columns={4} spacing={1}>
-              {dots}
-            </SimpleGrid>
-          </DotGroup>
+          <SimpleGrid columns={1} spacing="4px">
+            <Box px="10px">
+              <Slider>{sliders}</Slider>
+            </Box>
+            <CarouselProvider naturalSlideWidth={350} naturalSlideHeight={400} infinite={true}
+              visibleSlides={4} totalSlides={images.length}>
+              <Box pos="relative" maxW={400}>
+                <SubSlider />
+                <ButtonBack>
+                  <Center pos="absolute" top="0" h="71px" w="20px" left="0" bg="white" opacity="80%" align="middle">
+                    {`<`}
+                  </Center>
+                </ButtonBack>
+                <ButtonNext>
+                  <Center pos="absolute" top="0" h="71px" w="20px" right="0" bg="white" opacity="80%" align="middle">
+                    {`>`}
+                  </Center>
+                </ButtonNext>
+              </Box>
+            </CarouselProvider>
+          </SimpleGrid>
         </Box>
         <Box maxW={400}>
-          <Heading>{S(currentVariant.name).humanize().titleCase().s}</Heading>
+          <Heading color={`${currentVariant.colour}.500`}>{S(currentVariant.name).humanize().titleCase().s}</Heading>
           <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours}/>
           <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes}/>
           <HStack spacing={4} py={2}>
@@ -131,9 +168,15 @@ export default function ProductDetails(props) {
               </StatNumber>
             </Stat>
             <HStack maxW="150px">
-              <Box onClick={addOrIncreaseCartItem} {...inc}><AddIcon size="2em" /></Box>
+              <IconButton bg="" _hover={{ bg: useColorModeValue("red.300", "red.400") }} size="2em"
+                onClick={decrementIfHasItem} {...dec} suppressHydrationWarning>
+                <AddIcon color="black" size="2em" />
+              </IconButton>
               <Input {...input} value={variantQuantityInCart} suppressHydrationWarning />
-              <Box onClick={decrementIfHasItem} {...dec} suppressHydrationWarning><RemoveIcon size="2em" /></Box>
+              <IconButton bg="" _hover={{ bg: useColorModeValue("red.300", "red.400") }} size="2em"
+                onClick={decrementIfHasItem} {...dec} suppressHydrationWarning>
+                <RemoveIcon color="black" size="2em" />
+              </IconButton>
             </HStack>
           </HStack>
         </Box>

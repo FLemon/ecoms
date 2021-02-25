@@ -7,7 +7,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import {
   Collapse, useDisclosure, useColorModeValue, Divider, Spacer, SimpleGrid, Heading,
   Center, Stack, Box, Flex, Text, Button, Link, Alert, AlertIcon, AlertDescription,
-  AlertTitle, CloseButton
+  AlertTitle, CloseButton, HStack
 } from "@chakra-ui/react"
 import S from "string"
 import axios from "axios"
@@ -68,26 +68,18 @@ const NavBarContainer = ({ children }) => {
 
 const CategoryCrumb = ({categorySlug}) => {
   return (
-    <>
-      /
-      <Spacer />
-      <Link href={`/shop/${categorySlug}`}>
-        {S(categorySlug).humanize().titleCase().s}
-      </Link>
-    </>
+    <Link href={`/shop/${categorySlug}`}>
+      {S(categorySlug).humanize().titleCase().s}
+    </Link>
   )
 }
 
 const ProductCrumb = ({categorySlug, productSlug}) => {
   if (productSlug) {
     return (
-      <>
-        /
-        <Spacer />
-        <Link href={`/shop/${categorySlug}/${productSlug}`}>
-          {S(productSlug).humanize().titleCase().s}
-        </Link>
-      </>
+      <Link href={`/shop/${categorySlug}/${productSlug}`}>
+        {S(productSlug).humanize().titleCase().s}
+      </Link>
     )
   }
   return <></>
@@ -98,13 +90,13 @@ const Breadcrumb = ({categorySlug, productSlug}) => {
   return (
     <SimpleGrid columns={{sm: 2, md:4}} p="4">
       <Spacer />
-      <Center maxW={200}>
-        HOME
-        <Spacer />
+      <HStack maxW="300px">
+        <Link>HOME</Link>
+        <span>></span>
         <CategoryCrumb categorySlug={categorySlug}/>
-        <Spacer />
+        <span>></span>
         <ProductCrumb categorySlug={categorySlug} productSlug={productSlug}/>
-      </Center>
+      </HStack>
     </SimpleGrid>
   )
 }

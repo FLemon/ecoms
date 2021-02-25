@@ -46,24 +46,28 @@ const getInventory = async () => {
 }
 
 export default async (req, res) => {
-  const callbackUrl = `${req.headers.origin}/shop?stripe_session_id={CHECKOUT_SESSION_ID}`
+  const { validate_only } = req.query
   const cartItems = req.body
-  console.log(cartItems)
   const inventory = await getInventory()
-  console.log(inventory[0])
   const line_items = validateCartItems(inventory, cartItems)
-  console.log(line_items)
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items,
-    mode: "payment",
-    success_url: callbackUrl,
-    cancel_url: callbackUrl,
-    shipping_address_collection: {
-      allowed_countries: ['GB'],
-    },
-  });
 
-  res.status = 200
-  res.json({ id: session.id })
+  if (validate_only) {
+    res.status = 200
+    res.json({ validated: line_items.length })
+  } else {
+    const callbackUrl = `${req.headers.origin}/shop?stripe_session_id={CHECKOUT_SESSION_ID}`
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items,
+      mode: "payment",
+      success_url: callbackUrl,
+      cancel_url: callbackUrl,
+      shipping_address_collection: {
+        allowed_countries: ['GB'],
+      },
+    });
+
+    res.status = 200
+    res.json({ id: session.id })
+  }
 };
