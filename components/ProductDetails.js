@@ -2,24 +2,27 @@ import { useContext, useState, useEffect } from 'react'
 import S from "string"
 import {
   Center, GridItem, Grid, SimpleGrid, Flex, Spacer, Box, Image, FormControl, FormLabel, Select,
-  Stat, StatNumber, Button, HStack, useNumberInput, Input, useColorModeValue
+  Stat, StatNumber, Button, HStack, useNumberInput, Input, useColorModeValue, Heading
 } from "@chakra-ui/react"
 import { IoAddCircleSharp as AddIcon, IoRemoveCircleSharp as RemoveIcon } from "react-icons/io5";
 import {
   CarouselContext, Dot, DotGroup, Slider, Slide, ButtonBack, ButtonNext, ImageWithZoom
 } from "pure-react-carousel"
 import "pure-react-carousel/dist/react-carousel.es.css"
-import { useShoppingCart } from 'use-shopping-cart'
+import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
 
 const transformVariant = ({variant, size, product}) => {
   const variantSize = size || "m"
   const variantPrice = variant.gbp_in_uk || product.gbp_in_uk
   return {
+    name: product.slug,
     id: `${variant.slug}-${variantSize}`,
     colour: variant.colour.slug,
     size: variantSize,
     sizes: ["s", "m", "l", "xl", "xxl", "xxxl"].filter(s => variant[s] > 0),
-    price: variantPrice
+    price: variantPrice*100,
+    currency: "GBP",
+    image: variant.images[0].url
   }
 }
 
@@ -56,7 +59,6 @@ export default function ProductDetails(props) {
   }, [size])
 
   useEffect(() => {
-    console.log(currentVariant)
   }, [currentVariant])
 
   const fallbackImage = "/product-fallback.jpeg"
@@ -64,21 +66,22 @@ export default function ProductDetails(props) {
   let dots = []
 
   const addOrIncreaseCartItem = (e) => {
-    if (cartDetails[currentVariant.slug]) {
-      incrementItem(currentVariant.slug)
+    if (cartDetails[currentVariant.id]) {
+      incrementItem(currentVariant.id)
     } else {
       addItem(currentVariant)
     }
   }
 
   const decrementIfHasItem = (e) => {
-    if (cartDetails[currentVariant.slug]) {
-      decrementItem(currentVariant.slug)
+    if (cartDetails[currentVariant.id]) {
+      decrementItem(currentVariant.id)
     }
   }
 
+  const variantQuantityInCart = cartDetails[currentVariant.id] ? cartDetails[currentVariant.id].quantity : 0
   const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } = useNumberInput({
-    step: 1, defaultValue: cartDetails[currentVariant.slug] ? cartDetails[currentVariant.slug].quantity : 0, min: 0, precision: 0,
+    step: 1, defaultValue: variantQuantityInCart, min: 0, precision: 0,
   })
 
   const inc = getIncrementButtonProps()
@@ -118,15 +121,18 @@ export default function ProductDetails(props) {
           </DotGroup>
         </Box>
         <Box maxW={400}>
+          <Heading>{S(currentVariant.name).humanize().titleCase().s}</Heading>
           <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours}/>
           <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes}/>
           <HStack spacing={4} py={2}>
             <Stat maxW={40}>
-              <StatNumber color="black">£{currentVariant.price}</StatNumber>
+              <StatNumber color="black">
+                {formatCurrencyString({value: currentVariant.price, currency: currentVariant.currency})}
+              </StatNumber>
             </Stat>
             <HStack maxW="150px">
               <Box onClick={addOrIncreaseCartItem} {...inc}><AddIcon size="2em" /></Box>
-              <Input {...input} suppressHydrationWarning />
+              <Input {...input} value={variantQuantityInCart} suppressHydrationWarning />
               <Box onClick={decrementIfHasItem} {...dec} suppressHydrationWarning><RemoveIcon size="2em" /></Box>
             </HStack>
           </HStack>

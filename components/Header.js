@@ -1,6 +1,8 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { IoClose, IoMenu } from "react-icons/io5";
 import { useRouter } from 'next/router'
+import { useShoppingCart } from "use-shopping-cart"
+import { loadStripe } from '@stripe/stripe-js'
 
 import {
   Collapse, useDisclosure, useColorModeValue, Divider, Spacer, SimpleGrid, Heading,
@@ -108,9 +110,16 @@ const Breadcrumb = ({categorySlug, productSlug}) => {
 }
 
 const CheckoutAlert = () => {
+  const { clearCart } = useShoppingCart()
   const router = useRouter()
   const stripeSessionId = router.query.stripe_session_id
+  const checkoutSessionUrl = `/api/checkout_session/${stripeSessionId}`
   let alertStatus, alertMsg
+  useEffect(() => {
+    if (alertStatus == "success") {
+      clearCart()
+    }
+  }, [alertStatus])
 
   const fetcher = async (url) => {
     if (stripeSessionId) {
@@ -135,13 +144,18 @@ const CheckoutAlert = () => {
       case "paid":
         return ["success", "thank you for your payment"]
       case "unpaid":
-        return ["warning", "you have pending payment"]
+        return ["warning", "payment canceled"]
       default:
-        return ["info", "you have not started a purchase"]
+        return ["", ""]
     }
   }
 
-  [alertStatus, alertMsg] = generateAlertProps(useSWR(`/api/checkout_session/${stripeSessionId}`, fetcher))
+  [alertStatus, alertMsg] = generateAlertProps(useSWR(checkoutSessionUrl, fetcher))
+
+  const returnCheckout = async () => {
+    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+    await stripe.redirectToCheckout({ sessionId: stripeSessionId });
+  }
 
   return (
     <Collapse in={alertStatus ? true : false} animateOpacity>
@@ -149,6 +163,7 @@ const CheckoutAlert = () => {
         <Alert alignItems="center" justifyContent="center" textAlign="center" status={alertStatus}>
           <AlertIcon />
           <AlertTitle>{S(alertMsg).humanize().titleCase().s}</AlertTitle>
+          {alertStatus === "warning" ? <AlertDescription><Link onClick={returnCheckout}>return to your payment</Link></AlertDescription> : <></>}
         </Alert>
       )}
     </Collapse>
