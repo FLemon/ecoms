@@ -16,7 +16,7 @@ import S from "string"
 export default function Checkout(props) {
   const [cartEmpty, setCartEmpty] = useState(true)
   const {
-    formattedTotalPrice, cartCount, clearCart, cartDetails,
+    totalPrice, cartCount, clearCart, cartDetails,
     addItem, incrementItem, decrementItem
   } = useShoppingCart()
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -94,7 +94,7 @@ export default function Checkout(props) {
             </DrawerBody>
 
             <DrawerFooter>
-              <Text px={4} fontSize="xl" color="black"><strong>Total: </strong>{formattedTotalPrice}</Text>
+              <Text px={4} fontSize="xl" color="black"><strong>Total: </strong>{formatCurrencyString({value: totalPrice, currency: "GBP"})}</Text>
               <Button onClick={toCheckout} color="blue" isDisabled={cartCount === 0}>Checkout</Button>
             </DrawerFooter>
           </DrawerContent>
