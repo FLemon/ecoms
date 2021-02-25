@@ -19,6 +19,7 @@
     "@emotion/styled": "^11.1.5",
     "@stripe/stripe-js": "^1.12.1",
     "axios": "^0.21.1",
+    "encoding": "^0.1.13",
     "framer-motion": "^3.3.0",
     "graphql": "^15.5.0",
     "next": "10.0.4",
