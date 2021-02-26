@@ -67,19 +67,28 @@ const NavBarContainer = ({ children }) => {
 }
 
 const CategoryCrumb = ({categorySlug}) => {
-  return (
-    <Link href={`/shop/${categorySlug}`}>
-      {S(categorySlug).humanize().titleCase().s}
-    </Link>
-  )
+  if (categorySlug) {
+    return (
+      <>
+        <span>></span>
+        <Link href={`/shop/${categorySlug}`}>
+          {S(categorySlug).humanize().titleCase().s}
+        </Link>
+      </>
+    )
+  }
+  return <></>
 }
 
 const ProductCrumb = ({categorySlug, productSlug}) => {
   if (productSlug) {
     return (
-      <Link href={`/shop/${categorySlug}/${productSlug}`}>
-        {S(productSlug).humanize().titleCase().s}
-      </Link>
+      <>
+        <span>></span>
+        <Link href={`/shop/${categorySlug}/${productSlug}`}>
+          {S(productSlug).humanize().titleCase().s}
+        </Link>
+      </>
     )
   }
   return <></>
@@ -91,10 +100,8 @@ const Breadcrumb = ({categorySlug, productSlug}) => {
     <SimpleGrid columns={{sm: 2, md:4}} p="4">
       <Spacer />
       <HStack maxW="300px">
-        <Link>HOME</Link>
-        <span>></span>
+        <Link href="/">HOME</Link>
         <CategoryCrumb categorySlug={categorySlug}/>
-        <span>></span>
         <ProductCrumb categorySlug={categorySlug} productSlug={productSlug}/>
       </HStack>
     </SimpleGrid>

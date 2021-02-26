@@ -116,10 +116,10 @@ export default function Checkout(props) {
 
             <Divider />
             <DrawerFooter p="8px">
-              <Text px={4} fontSize="xl" color="black"><strong>Total: </strong>{formatCurrencyString({value: totalPrice, currency: "GBP"})}</Text>
+              <Text px={4} fontSize="12pt" color="black"><strong>Total: </strong>{formatCurrencyString({value: totalPrice, currency: "GBP"})}</Text>
               <Spacer />
-              <Button bg="" borderRadius="lg" onClick={toCheckout} color="red.300" fontWeight="bold"
-                isDisabled={cartCount === 0} _hover={{ color:"white", bg:"red.300" }}>
+              <Button bg="red.300" borderRadius="lg" fontSize="14pt" onClick={toCheckout} color="white" fontWeight="bold"
+                isDisabled={cartCount === 0} _hover={{ bg:"red.500" }}>
                 Checkout
               </Button>
             </DrawerFooter>
