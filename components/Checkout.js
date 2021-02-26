@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react"
-import { IoAddCircleSharp as AddIcon, IoRemoveCircleSharp as RemoveIcon } from "react-icons/io5";
+import { IoAddOutline as AddIcon, IoRemoveOutline as RemoveIcon } from "react-icons/io5";
 import {
   Image, Stack, Input, HStack, useNumberInput, Text, AspectRatio, VStack, Center, Divider, Spacer,
   useDisclosure, Box, SimpleGrid, IconButton, Button, Flex, Heading, Stat, StatNumber, StatLabel,
   Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerFooter,
-  Link, useColorModeValue, StatHelpText
+  Link, useColorModeValue
 } from "@chakra-ui/react"
 import { useRouter } from 'next/router'
 import axios from "axios"
@@ -40,16 +40,7 @@ export default function Checkout(props) {
       }
   }
 
-  const CartItem = ({item}) => {
-    const variantQuantityInCart = item ? item.quantity : 0
-    const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } = useNumberInput({
-      step: 1, defaultValue: variantQuantityInCart, min: 0, precision: 0,
-    })
-
-    const inc = getIncrementButtonProps()
-    const dec = getDecrementButtonProps()
-    const input = getInputProps({ isReadOnly: true })
-
+  const CartItem = ({item, quantity}) => {
     return (
       <>
         <Flex>
@@ -67,15 +58,21 @@ export default function Checkout(props) {
               </HStack>
             </VStack>
             <HStack w="200px" spacing="2px">
-              <Box onClick={() => incrementItem(item.id)} {...inc}><AddIcon size="1.5em" /></Box>
-              <Input h="30px" w="50px" {...input} value={variantQuantityInCart} suppressHydrationWarning />
-              <Box onClick={() => decrementItem(item.id)} {...dec} suppressHydrationWarning><RemoveIcon size="1.5em" /></Box>
+              <Button bg="" onClick={() => incrementItem(item.id)} size="2.2em"
+                _hover={{ bg: useColorModeValue("red.300", "red.400") }}>
+                <AddIcon size="1.5em" />
+              </Button>
+              <Input h="30px" w="50px" readOnly value={quantity} suppressHydrationWarning />
+              <Button bg="" onClick={() => decrementItem(item.id)} size="2.2em"
+                _hover={{ bg: useColorModeValue("red.300", "red.400") }}>
+                <RemoveIcon size="1.5em" />
+              </Button>
               <Spacer />
               <Stack spacing={0}>
-                <Text size="sm" color="black" align="right">
-                  {formatCurrencyString({value: item.price * variantQuantityInCart, currency: item.currency})}
-                </Text>
-                {variantQuantityInCart > 1 &&
+                <Box fontSize="12pt" color="black" align="right">
+                  {formatCurrencyString({value: item.price * quantity, currency: item.currency})}
+                </Box>
+                {quantity > 1 &&
                   <Box fontSize="8pt" color="grey" align="right">
                     {formatCurrencyString({value: item.price, currency: item.currency})} each
                   </Box>
@@ -114,13 +111,17 @@ export default function Checkout(props) {
             <Divider />
 
             <DrawerBody px="12px">
-              {Object.keys(cartDetails).map(id => <CartItem key={id} item={cartDetails[id]}/>)}
+              {Object.keys(cartDetails).map(id => <CartItem key={id} item={cartDetails[id]} quantity={cartDetails[id].quantity}/>)}
             </DrawerBody>
 
             <Divider />
-            <DrawerFooter>
+            <DrawerFooter p="8px">
               <Text px={4} fontSize="xl" color="black"><strong>Total: </strong>{formatCurrencyString({value: totalPrice, currency: "GBP"})}</Text>
-              <Button onClick={toCheckout} color="blue" isDisabled={cartCount === 0}>Checkout</Button>
+              <Spacer />
+              <Button bg="" borderRadius="lg" onClick={toCheckout} color="red.300" fontWeight="bold"
+                isDisabled={cartCount === 0} _hover={{ color:"white", bg:"red.300" }}>
+                Checkout
+              </Button>
             </DrawerFooter>
           </DrawerContent>
         </DrawerOverlay>

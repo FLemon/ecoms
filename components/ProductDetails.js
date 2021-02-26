@@ -28,6 +28,7 @@ const transformVariant = ({variant, size, product}) => {
 
 export default function ProductDetails(props) {
   const { slideIndex, images, product, productVariants } = props
+  const [currentVariantQuantityInCart, setCurrentVariantQuantityInCart] = useState(0)
   const [currentVariant, setCurrentVariant] = useState(transformVariant({
     variant: productVariants[0],
     product: product
@@ -37,7 +38,7 @@ export default function ProductDetails(props) {
   const carouselContext = useContext(CarouselContext)
   let subCarouselContext
   const [currentSlide, setCurrentSlide] = useState(carouselContext.state.currentSlide)
-  const { cartDetails, addItem, incrementItem, decrementItem } = useShoppingCart()
+  const { cartCount, cartDetails, addItem, incrementItem, decrementItem } = useShoppingCart()
 
   const colours = productVariants.map(pv => (pv.colour.slug))
 
@@ -60,34 +61,12 @@ export default function ProductDetails(props) {
   }, [size])
 
   useEffect(() => {
-  }, [currentVariant])
+    setCurrentVariantQuantityInCart(cartDetails[currentVariant.id] ? cartDetails[currentVariant.id].quantity : 0)
+  }, [cartCount, currentVariant])
 
   const fallbackImage = "/product-fallback.jpeg"
   let sliders = []
   let dots = []
-
-  const addOrIncreaseCartItem = (e) => {
-    if (cartDetails[currentVariant.id]) {
-      incrementItem(currentVariant.id)
-    } else {
-      addItem(currentVariant)
-    }
-  }
-
-  const decrementIfHasItem = (e) => {
-    if (cartDetails[currentVariant.id]) {
-      decrementItem(currentVariant.id)
-    }
-  }
-
-  const variantQuantityInCart = cartDetails[currentVariant.id] ? cartDetails[currentVariant.id].quantity : 0
-  const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } = useNumberInput({
-    step: 1, defaultValue: variantQuantityInCart, min: 0, precision: 0,
-  })
-
-  const inc = getIncrementButtonProps()
-  const dec = getDecrementButtonProps()
-  const input = getInputProps({ isReadOnly: true })
 
   images.forEach((image, index) => {
     sliders.push(<Slide key={index} index={index}><ImageWithZoom src={image.url}></ImageWithZoom></Slide>)
@@ -131,6 +110,21 @@ export default function ProductDetails(props) {
       </Slider>
     )
   }
+
+  const addOrIncreaseCartItem = (e) => {
+    if (currentVariantQuantityInCart > 0) {
+      incrementItem(currentVariant.id)
+    } else {
+      addItem(currentVariant)
+    }
+  }
+
+  const decrementIfHasItem = (e) => {
+    if (currentVariantQuantityInCart > 0) {
+      decrementItem(currentVariant.id)
+    }
+  }
+
   return (
     <Center>
       <SimpleGrid maxW={800} columns={{sm: 1, md: 2}} spacing="4" p={10}>
@@ -158,7 +152,7 @@ export default function ProductDetails(props) {
           </SimpleGrid>
         </Box>
         <Box maxW={400}>
-          <Heading color={`${currentVariant.colour}.500`}>{S(currentVariant.name).humanize().titleCase().s}</Heading>
+          <Heading>{S(currentVariant.name).humanize().titleCase().s}</Heading>
           <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours}/>
           <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes}/>
           <HStack spacing={4} py={2}>
@@ -168,15 +162,15 @@ export default function ProductDetails(props) {
               </StatNumber>
             </Stat>
             <HStack maxW="150px">
-              <IconButton bg="" _hover={{ bg: useColorModeValue("red.300", "red.400") }} size="2em"
-                onClick={decrementIfHasItem} {...dec} suppressHydrationWarning>
-                <AddIcon color="black" size="2em" />
-              </IconButton>
-              <Input {...input} value={variantQuantityInCart} suppressHydrationWarning />
-              <IconButton bg="" _hover={{ bg: useColorModeValue("red.300", "red.400") }} size="2em"
-                onClick={decrementIfHasItem} {...dec} suppressHydrationWarning>
-                <RemoveIcon color="black" size="2em" />
-              </IconButton>
+              <Button bg="" size="2em" _hover={{ bg: useColorModeValue("red.300", "red.400") }}
+                onClick={addOrIncreaseCartItem} suppressHydrationWarning>
+                <AddIcon size="2em"/>
+              </Button>
+              <Input value={currentVariantQuantityInCart} suppressHydrationWarning/>
+              <Button bg="" size="2em" _hover={{ bg: useColorModeValue("red.300", "red.400") }}
+                onClick={decrementIfHasItem} disabled={currentVariantQuantityInCart === 0}>
+                <RemoveIcon size="2em" />
+              </Button>
             </HStack>
           </HStack>
         </Box>

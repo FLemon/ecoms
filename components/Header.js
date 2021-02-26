@@ -30,9 +30,9 @@ const MenuLinks = ({ isOpen, categories }) => {
         pt={[4, 4, 0, 0]}
       >
         {categories.map(cat => (
-          <Link rounded="md" key={cat.slug} href={`/shop/${cat.slug}`}
+          <Link fontWeight="bold" rounded="md" key={cat.slug} href={`/shop/${cat.slug}`}
             alignItems="center" justifyContent="center" bg="white" px={5} py={3}
-            _hover={{ bg: useColorModeValue("red.300", "red.400") }}
+            _hover={{ color: "white", bg: useColorModeValue("red.300", "red.400") }}
           >
             <Center><Text fontSize="lg">{S(cat.slug).humanize().titleCase().s}</Text></Center>
           </Link>
