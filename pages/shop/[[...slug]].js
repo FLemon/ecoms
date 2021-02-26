@@ -26,7 +26,7 @@ export default function Shop(props) {
       return (
         <CarouselProvider naturalSlideWidth={300} naturalSlideHeight={400} infinite={true}
           visibleSlides={1} totalSlides={images.length} hasMasterSpinner lockOnWindowScroll>
-          <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />
+          {product.product_variants[0] && <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />}
         </CarouselProvider>
       )
     }

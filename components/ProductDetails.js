@@ -12,18 +12,22 @@ import "pure-react-carousel/dist/react-carousel.es.css"
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
 
 const transformVariant = ({variant, size, product}) => {
-  const variantSize = size || "m"
-  const variantPrice = variant.gbp_in_uk || product.gbp_in_uk
-  return {
-    name: product.slug,
-    id: `${variant.slug}-${variantSize}`,
-    colour: variant.colour.slug,
-    size: variantSize,
-    sizes: ["s", "m", "l", "xl", "xxl", "xxxl"].filter(s => variant[s] > 0),
-    price: variantPrice*100,
-    currency: "GBP",
-    image: variant.images[0].url
+  let result = { currency: "GBP" }
+  if (variant) {
+    const variantSize = size || "m"
+    const variantPrice = variant.gbp_in_uk || product.gbp_in_uk
+    result = {
+      name: product.slug,
+      id: `${variant.slug}-${variantSize}`,
+      colour: variant.colour.slug,
+      size: variantSize,
+      sizes: ["s", "m", "l", "xl", "xxl", "xxxl"].filter(s => variant[s] > 0),
+      price: variantPrice*100,
+      image: variant.images[0].url,
+      ...result
+    }
   }
+  return result
 }
 
 export default function ProductDetails(props) {
