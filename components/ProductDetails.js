@@ -166,8 +166,8 @@ export default function ProductDetails(props) {
                 onClick={addOrIncreaseCartItem} suppressHydrationWarning>
                 <AddIcon size="2em"/>
               </Button>
-              <Input value={currentVariantQuantityInCart} suppressHydrationWarning/>
-              <Button bg="" size="2em" _hover={currentVariantQuantityInCart > 0 && { bg: useColorModeValue("red.300", "red.400") }}
+              <Input defaultValue={currentVariantQuantityInCart} suppressHydrationWarning/>
+              <Button bg="" size="2em" _hover={{ bg: useColorModeValue("red.300", "red.400") }}
                 onClick={decrementIfHasItem} disabled={currentVariantQuantityInCart === 0}>
                 <RemoveIcon size="2em" />
               </Button>
