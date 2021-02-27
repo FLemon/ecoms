@@ -21,7 +21,7 @@ const transformVariant = ({variant, size, product}) => {
       id: `${variant.slug}-${variantSize}`,
       colour: variant.colour.slug,
       size: variantSize,
-      sizes: ["s", "m", "l", "xl", "xxl", "xxxl"].filter(s => variant[s] > 0),
+      sizes: variant.size.filter(s => s.quantity > 0),
       price: variantPrice*100,
       image: variant.images[0].url,
       ...result
@@ -158,7 +158,7 @@ export default function ProductDetails(props) {
         <Box maxW={400}>
           <Heading>{S(currentVariant.name).humanize().titleCase().s}</Heading>
           <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours}/>
-          <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes}/>
+          <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes.map(s => s.slug)}/>
           <HStack spacing={4} py={2}>
             <Stat maxW={40}>
               <StatNumber color="black">

@@ -59,7 +59,7 @@ const getProductVariants = async (productSlug) => {
             colour { slug, name_cn }
             gbp_in_uk
             limited_edition
-            s m l xl xxl xxl
+            size { slug, quantity }
           }
         }
       `,
