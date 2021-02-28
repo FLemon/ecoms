@@ -1,4 +1,3 @@
-import { SimpleGrid } from "@chakra-ui/react"
 import { CartProvider } from 'use-shopping-cart'
 import { loadStripe } from '@stripe/stripe-js'
 
@@ -24,7 +23,7 @@ export default function Shop(props) {
       })
 
       return (
-        <CarouselProvider naturalSlideWidth={300} naturalSlideHeight={400} infinite={true}
+        <CarouselProvider naturalSlideWidth={400} naturalSlideHeight={500} infinite={true}
           visibleSlides={1} totalSlides={images.length} hasMasterSpinner lockOnWindowScroll>
           <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />
         </CarouselProvider>

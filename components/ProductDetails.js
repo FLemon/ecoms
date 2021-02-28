@@ -97,7 +97,7 @@ export default function ProductDetails(props) {
     const ColourOptions = () => {
       return options.map(option => (
         <option key={option.colour} value={option.colour}>
-          {`${S(option.colour).humanize().titleCase().s} ${option.limited ? "(Limited)" : ""}`}
+          {`${S(option.colour).humanize().titleCase().s} ${option.limited ? "(Limited Edition)" : ""}`}
         </option>
       ))
     }
@@ -158,23 +158,23 @@ export default function ProductDetails(props) {
 
   return (
     <Center>
-      <SimpleGrid maxW={800} columns={{sm: 1, md: 2}} spacing="4" p={10}>
-        <Box maxW={400}>
-          <SimpleGrid columns={1} spacing="4px">
+      <SimpleGrid columns={{sm: 1, md: 2}} spacing="4" p={2}>
+        <Box>
+          <SimpleGrid w="350px" columns={1} spacing="4px">
             <Box px="10px">
               <Slider>{sliders}</Slider>
             </Box>
-            <CarouselProvider naturalSlideWidth={350} naturalSlideHeight={400} infinite={true}
+            <CarouselProvider h="100%" naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
               visibleSlides={4} totalSlides={images.length}>
-              <Box pos="relative" maxW={400}>
-                <SubSlider />
+              <Box pos="relative">
                 <ButtonBack>
-                  <Center pos="absolute" top="0" h="71px" w="20px" left="0" bg="white" opacity="80%" align="middle">
+                  <Center z-index="1" pos="absolute" top="0" h="100%" w="20px" left="0" bg="white" opacity="80%" align="middle">
                     {`<`}
                   </Center>
                 </ButtonBack>
+                <SubSlider />
                 <ButtonNext>
-                  <Center pos="absolute" top="0" h="71px" w="20px" right="0" bg="white" opacity="80%" align="middle">
+                  <Center pos="absolute" top="0" h="100%" w="20px" right="0" bg="white" opacity="80%" align="middle">
                     {`>`}
                   </Center>
                 </ButtonNext>
@@ -182,16 +182,15 @@ export default function ProductDetails(props) {
             </CarouselProvider>
           </SimpleGrid>
         </Box>
-        <Box maxW={400}>
+        <Box>
           <Heading>
             {S(currentVariant.name).humanize().titleCase().s}
-            {currentVariant.limitedEdition && <Badge variant="solid" colorScheme="red">Limited</Badge>}
           </Heading>
           <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours} limited={currentVariant.limitedEdition}/>
           <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes.map(s => s.slug)}/>
           <HStack spacing={4} py={2}>
             <Stat maxW={40}>
-              <StatNumber color="black">
+              <StatNumber textAlign="center" color="black">
                 {formatCurrencyString({value: currentVariant.price, currency: currentVariant.currency})}
               </StatNumber>
             </Stat>
@@ -207,6 +206,7 @@ export default function ProductDetails(props) {
               </Button>
             </HStack>
           </HStack>
+          {currentVariant.limitedEdition && <Badge variant="solid" colorScheme="red">Limited Edition</Badge>}
         </Box>
       </SimpleGrid>
     </Center>

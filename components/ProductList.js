@@ -1,7 +1,8 @@
 import {
   Text, Image, SimpleGrid, SpacerLink, LinkOverlay, Flex, Center,
-  Spacer, Stat, StatLabel, StatNumber, StatHelpText, Box, Link
+  Spacer, Box, Link, Heading, Stack
 } from "@chakra-ui/react"
+import { formatCurrencyString } from 'use-shopping-cart'
 import S from "string"
 
 const Product = (props) => {
@@ -13,19 +14,14 @@ const Product = (props) => {
 
   const productHref = `/shop/${categorySlug}/${product.slug}`
   return (
-    <Center>
-      <Box maxW={200}>
-        <Link href={productHref}>
-          <Image _hover={{ opacity: "80%" }} rounded="sm" src={imageSrc} fallbackSrc={fallbackImage} />
-          <Stat>
-            <StatLabel color="black">
-              {S(product.slug).humanize().titleCase().s}({product.name_cn})
-            </StatLabel>
-            <StatNumber color="black">£{product.gbp_in_uk}</StatNumber>
-          </Stat>
-        </Link>
-      </Box>
-    </Center>
+    <Link href={productHref} bg="white" p="8px"
+    _hover={{ color:"black", textDecor: "underline" }}>
+      <Image _hover={{ opacity: "80%" }} rounded="sm" src={imageSrc} fallbackSrc={fallbackImage} />
+      <Text fontWeight="bold" color="black">
+        {S(product.slug).humanize().titleCase().s}({product.name_cn})
+      </Text>
+      <Box color="black">{formatCurrencyString({value: product.gbp_in_uk * 100, currency: "GBP"})}</Box>
+    </Link>
   )
 }
 
@@ -40,8 +36,8 @@ export default function ProductList(props) {
   }
   return (
     <Center>
-      <SimpleGrid maxW={800} bg="gray.50" columns={{sm: 2, md: 4}} spacing="4"
-        p="10" textAlign="center" rounded="lg" color="gray.400">
+      <SimpleGrid maxW={800} bg="gray.50" columns={{sm: 2, md: 4}} spacing="2"
+        p="5" textAlign="center" rounded="lg" color="gray.400">
         <Spacer />
         {products.map(product => (
           <Product key={product.slug} categorySlug={categorySlug} product={product}/>

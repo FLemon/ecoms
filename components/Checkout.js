@@ -2,9 +2,9 @@ import { useState, useRef, useEffect } from "react"
 import { IoAddOutline as AddIcon, IoRemoveOutline as RemoveIcon } from "react-icons/io5";
 import {
   Image, Stack, Input, HStack, useNumberInput, Text, AspectRatio, VStack, Center, Divider, Spacer,
-  useDisclosure, Box, SimpleGrid, IconButton, Button, Flex, Heading, Stat, StatNumber, StatLabel,
+  useDisclosure, Box, SimpleGrid, IconButton, Button, Flex, Heading,
   Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerFooter,
-  Link, useColorModeValue
+  Link, useColorModeValue, Badge
 } from "@chakra-ui/react"
 import { useRouter } from 'next/router'
 import axios from "axios"
@@ -46,8 +46,11 @@ export default function Checkout(props) {
         <Flex>
           <Center><Image w="80px" src={item.image}/></Center>
           <VStack p={2} spacing="4px">
-            <VStack w="200px" fontWeight="bold" spacing="2px" align="left" p={2}>
-              <Heading size="md">{S(item.name).humanize().titleCase().s}</Heading>
+            <VStack w="200px" fontWeight="bold" spacing="2px" align="left">
+              <Heading size="md">
+                {S(item.name).humanize().titleCase().s}
+                {item.limitedEdition && <Badge fontSize="10pt" variant="solid" colorScheme="red">Limited Edition</Badge>}
+              </Heading>
               <HStack>
                 <Text fontSize="xs">Colour:</Text>
                 <Text fontSize="xs" align="left">{S(item.colour).humanize().titleCase().s}</Text>
