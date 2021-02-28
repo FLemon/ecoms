@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from 'react'
 import S from "string"
 import {
   Center, GridItem, Grid, SimpleGrid, Flex, Spacer, Box, Image, FormControl, FormLabel, Select,
-  Stat, StatNumber, Button, HStack, useNumberInput, Input, useColorModeValue, Heading, Link, IconButton
+  Stat, StatNumber, Button, HStack, useNumberInput, Input, useColorModeValue, Heading, Link, Badge
 } from "@chakra-ui/react"
 import { IoAddOutline as AddIcon, IoRemoveOutline as RemoveIcon } from "react-icons/io5";
 import {
@@ -14,16 +14,17 @@ import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
 const transformVariant = ({variant, size, product}) => {
   let result = { currency: "GBP" }
   if (variant) {
-    const variantSize = size || "m"
     const variantPrice = variant.gbp_in_uk || product.gbp_in_uk
+    const variantSize = size || variant.sizes[0] && variant.sizes[0].slug
     result = {
       name: product.slug,
-      id: `${variant.slug}-${variantSize}`,
+      id: variantSize && `${variant.slug}-${variantSize}`,
       colour: variant.colour.slug,
-      size: variantSize,
+      size: variant.sizes[0] && variant.sizes[0].slug,
       sizes: variant.sizes.filter(s => s.quantity > 0),
       price: variantPrice*100,
       image: variant.images[0].url,
+      limitedEdition: variant.limited_edition,
       ...result
     }
   }
@@ -32,6 +33,13 @@ const transformVariant = ({variant, size, product}) => {
 
 export default function ProductDetails(props) {
   const { slideIndex, images, product, productVariants } = props
+  if (productVariants.length === 0) {
+    return (
+      <Center>
+        Coming soon
+      </Center>
+    )
+  }
   const [currentVariantQuantityInCart, setCurrentVariantQuantityInCart] = useState(0)
   const [currentVariant, setCurrentVariant] = useState(transformVariant({
     variant: productVariants[0],
@@ -44,7 +52,10 @@ export default function ProductDetails(props) {
   const [currentSlide, setCurrentSlide] = useState(carouselContext.state.currentSlide)
   const { cartCount, cartDetails, addItem, incrementItem, decrementItem } = useShoppingCart()
 
-  const colours = productVariants.map(pv => (pv.colour.slug))
+  const colours = productVariants.map(pv => ({
+    colour: pv.colour.slug,
+    limited: pv.limited_edition
+  }))
 
   useEffect(() => {
     carouselContext.setStoreState({ currentSlide: slideIndex[colour] })
@@ -77,16 +88,31 @@ export default function ProductDetails(props) {
     dots.push(<Dot key={index} slide={index}><Center maxW={100}><Image src={image.url} /></Center></Dot>)
   })
 
-  const FormControls = ({type, value, options, onChange}) => {
+  const FormControls = ({type, value, options, onChange, limited}) => {
+    if (options.length === 0) {
+      return (
+        <Box>no stock</Box>
+      )
+    }
+    const ColourOptions = () => {
+      return options.map(option => (
+        <option key={option.colour} value={option.colour}>
+          {`${S(option.colour).humanize().titleCase().s} ${option.limited ? "(Limited)" : ""}`}
+        </option>
+      ))
+    }
+
+    const SizeOptions = () => {
+      return options.map(v => (
+        <option key={v} value={v}>{v.toUpperCase()}</option>
+      ))
+    }
+
     return (
       <FormControl py={2} isRequired id={type}>
         <FormLabel>{S(type).humanize().titleCase().s}</FormLabel>
         <Select onChange={onChange} value={value}>
-          {options.map(v => (
-            <option key={v} value={v}>
-              {type === "colour" ? S(v).humanize().titleCase().s : v.toUpperCase()}
-            </option>
-          ))}
+          {type === "colour" ? <ColourOptions /> : <SizeOptions />}
         </Select>
       </FormControl>
     )
@@ -116,6 +142,7 @@ export default function ProductDetails(props) {
   }
 
   const addOrIncreaseCartItem = (e) => {
+    if (!currentVariant.size) { return }
     if (currentVariantQuantityInCart > 0) {
       incrementItem(currentVariant.id)
     } else {
@@ -156,8 +183,11 @@ export default function ProductDetails(props) {
           </SimpleGrid>
         </Box>
         <Box maxW={400}>
-          <Heading>{S(currentVariant.name).humanize().titleCase().s}</Heading>
-          <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours}/>
+          <Heading>
+            {S(currentVariant.name).humanize().titleCase().s}
+            {currentVariant.limitedEdition && <Badge variant="solid" colorScheme="red">Limited</Badge>}
+          </Heading>
+          <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours} limited={currentVariant.limitedEdition}/>
           <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes.map(s => s.slug)}/>
           <HStack spacing={4} py={2}>
             <Stat maxW={40}>
@@ -167,7 +197,7 @@ export default function ProductDetails(props) {
             </Stat>
             <HStack maxW="150px">
               <Button bg="" size="2em" _hover={{ bg: useColorModeValue("red.300", "red.400") }}
-                onClick={addOrIncreaseCartItem} suppressHydrationWarning>
+                onClick={addOrIncreaseCartItem} disabled={currentVariant.size ? false : true} suppressHydrationWarning>
                 <AddIcon size="2em"/>
               </Button>
               <Input defaultValue={currentVariantQuantityInCart} suppressHydrationWarning/>

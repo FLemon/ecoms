@@ -31,6 +31,13 @@ const Product = (props) => {
 
 export default function ProductList(props) {
   const { products, categorySlug } = props
+  if (products.length === 0) {
+    return (
+      <Center>
+        Coming soon
+      </Center>
+    )
+  }
   return (
     <Center>
       <SimpleGrid maxW={800} bg="gray.50" columns={{sm: 2, md: 4}} spacing="4"

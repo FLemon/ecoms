@@ -12,7 +12,6 @@ import { CarouselProvider } from "pure-react-carousel"
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export default function Shop(props) {
-  console.log(`props: ${props}`)
   const { categorySlug, productSlug, productVariants } = props
   const PageComponent = () => {
     if (productSlug) {
@@ -27,7 +26,7 @@ export default function Shop(props) {
       return (
         <CarouselProvider naturalSlideWidth={300} naturalSlideHeight={400} infinite={true}
           visibleSlides={1} totalSlides={images.length} hasMasterSpinner lockOnWindowScroll>
-          {product.product_variants[0] && <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />}
+          <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />
         </CarouselProvider>
       )
     }
