@@ -1,57 +1,16 @@
 import { validateCartItems } from 'use-shopping-cart/src/serverUtil'
 import Stripe from 'stripe'
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
-import S from "string"
+import DataClient from '@components/DataClient'
 
 const stripe = Stripe(process.env.STRIPE_KEY_SECRET);
-
-const client = new ApolloClient({
-  uri: `${process.env.API_PROTOCOL}://${process.env.API_HOST}/graphql`,
-  cache: new InMemoryCache(),
-  onError: (e) => {
-    console.log(JSON.Stringify(e))
-  }
-})
-
-const getInventory = async () => {
-  const { data } = await client.query({
-    query: gql`
-      query {
-        productVariants {
-          product { gbp_in_uk, slug }
-          slug
-          images { url }
-          colour { slug, name_cn }
-          gbp_in_uk
-          limited_edition
-          s m l xl xxl xxl
-        }
-      }
-    `
-  })
-
-  const inventory = []
-  data.productVariants.forEach(pv => {
-    const allSizeVariants = ["s", "m", "l", "xl", "xxl", "xxxl"].filter(s => pv[s] > 0).map(size => ({
-      name: S(pv.product.slug).humanize().titleCase().s,
-      sku: `${pv.slug}-${size}`,
-      price: (pv.gbp_in_uk || pv.product.gbp_in_uk)*100,
-      image: pv.images[0].url,
-      description: `colour: ${pv.colour.slug}, size: ${size}`,
-      currency: "GBP"
-    }))
-    inventory.push(...allSizeVariants)
-  })
-  return inventory
-}
 
 export default async (req, res) => {
   const { validate_only } = req.query
   const cartItems = req.body
-  const inventory = await getInventory()
+  const inventory = await DataClient.getInventories()
   const line_items = validateCartItems(inventory, cartItems)
 
-  if (validate_only) {
+  if (line_items.length === 0 || validate_only) {
     res.status = 200
     res.json({ validated: line_items.length })
   } else {

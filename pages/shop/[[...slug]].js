@@ -12,6 +12,7 @@ import { CarouselProvider } from "pure-react-carousel"
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export default function Shop(props) {
+  console.log(`props: ${props}`)
   const { categorySlug, productSlug, productVariants } = props
   const PageComponent = () => {
     if (productSlug) {

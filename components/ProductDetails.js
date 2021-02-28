@@ -21,7 +21,7 @@ const transformVariant = ({variant, size, product}) => {
       id: `${variant.slug}-${variantSize}`,
       colour: variant.colour.slug,
       size: variantSize,
-      sizes: variant.size.filter(s => s.quantity > 0),
+      sizes: variant.sizes.filter(s => s.quantity > 0),
       price: variantPrice*100,
       image: variant.images[0].url,
       ...result

@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import S from "string"
 
 const client = new ApolloClient({
   uri: `${process.env.API_PROTOCOL}://${process.env.API_HOST}/graphql`,
@@ -35,7 +36,7 @@ const getCategoryProducts = async (categorySlug) => {
           gbp_in_uk
           product_variants(limit:1) {
             colour { slug, name_cn },
-            images { url }
+            images(limit:1) { url }
           }
         }
       }
@@ -46,9 +47,6 @@ const getCategoryProducts = async (categorySlug) => {
 }
 
 const getProductVariants = async (productSlug) => {
-  if (!productSlug) {
-    return []
-  }
   if (productSlug) {
     const { data } = await client.query({
       query: gql`
@@ -59,7 +57,7 @@ const getProductVariants = async (productSlug) => {
             colour { slug, name_cn }
             gbp_in_uk
             limited_edition
-            size { slug, quantity }
+            sizes { slug, quantity }
           }
         }
       `,
@@ -67,7 +65,39 @@ const getProductVariants = async (productSlug) => {
     })
     return data.productVariants
   }
-  return null
+  return []
 }
 
-export default { getCategories, getCategoryProducts, getProductVariants }
+const getInventories = async () => {
+  const { data } = await client.query({
+    query: gql`
+      query {
+        productVariants {
+          product { gbp_in_uk, slug }
+          slug
+          images(limit:1) { url }
+          colour { slug, name_cn }
+          gbp_in_uk
+          limited_edition
+          sizes { slug, quantity }
+        }
+      }
+    `
+  })
+
+  const inventories = []
+  data.productVariants.forEach(pv => {
+    const allSizeVariants = pv.sizes.filter(s => s.quantity > 0).map(size => ({
+      name: S(pv.product.slug).humanize().titleCase().s,
+      sku: `${pv.slug}-${size.slug}`,
+      price: (pv.gbp_in_uk || pv.product.gbp_in_uk)*100,
+      image: pv.images[0].url,
+      description: `colour: ${pv.colour.slug}, size: ${size.slug}`,
+      currency: "GBP"
+    }))
+    inventories.push(...allSizeVariants)
+  })
+  return inventories
+}
+
+export default { getCategories, getCategoryProducts, getProductVariants, getInventories }

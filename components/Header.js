@@ -100,7 +100,7 @@ const Breadcrumb = ({categorySlug, productSlug}) => {
     <SimpleGrid columns={{sm: 2, md:4}} p="4">
       <Spacer />
       <HStack maxW="300px">
-        <Link href="/">HOME</Link>
+        <Link href="/shop">HOME</Link>
         <CategoryCrumb categorySlug={categorySlug}/>
         <ProductCrumb categorySlug={categorySlug} productSlug={productSlug}/>
       </HStack>
