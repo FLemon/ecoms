@@ -34,6 +34,7 @@ const getCategoryProducts = async (categorySlug) => {
           slug
           name_cn
           gbp_in_uk
+          size_guide
           product_variants(limit:1) {
             colour { slug, name_cn },
             images(limit:1) { url }

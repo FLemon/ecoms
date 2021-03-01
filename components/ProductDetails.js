@@ -10,6 +10,7 @@ import {
 } from "pure-react-carousel"
 import "pure-react-carousel/dist/react-carousel.es.css"
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
+import SizeGuide from '@components/SizeGuide'
 
 const transformVariant = ({variant, size, product}) => {
   let result = { currency: "GBP" }
@@ -97,7 +98,7 @@ export default function ProductDetails(props) {
     const ColourOptions = () => {
       return options.map(option => (
         <option key={option.colour} value={option.colour}>
-          {`${S(option.colour).humanize().titleCase().s} ${option.limited ? "(Limited Edition)" : ""}`}
+          {S(option.colour).humanize().titleCase().s} {option.limited ? "(Limited Edition)" : ""}
         </option>
       ))
     }
@@ -206,7 +207,8 @@ export default function ProductDetails(props) {
               </Button>
             </HStack>
           </HStack>
-          {currentVariant.limitedEdition && <Badge variant="solid" colorScheme="red">Limited Edition</Badge>}
+          <Badge variant="solid" colorScheme="red">{currentVariant.limitedEdition && "Limited Edition"}</Badge>
+          <SizeGuide product={product}/>
         </Box>
       </SimpleGrid>
     </Center>
