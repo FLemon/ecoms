@@ -6,8 +6,8 @@ import { loadStripe } from '@stripe/stripe-js'
 
 import {
   Collapse, useDisclosure, useColorModeValue, Divider, Spacer, SimpleGrid, Heading,
-  Center, Stack, Box, Flex, Text, Button, Link, Alert, AlertIcon, AlertDescription,
-  AlertTitle, CloseButton, HStack
+  Center, Stack, Box, Flex, Text, Link, Alert, AlertIcon, AlertDescription,
+  AlertTitle, HStack
 } from "@chakra-ui/react"
 import S from "string"
 import axios from "axios"
