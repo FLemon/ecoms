@@ -43,8 +43,8 @@ export default function ShopFront(props) {
       })
     })
     return (
-      <Box w="full">
-        {photos.length > 0 && <Gallery direction="column" columns={5} photos={photos} />}
+      <Box w="full" h="500px" overflow="auto">
+        {photos.length > 0 && <Gallery targetRowHeight={200} photos={photos} />}
       </Box>
     )
   }
@@ -53,17 +53,16 @@ export default function ShopFront(props) {
     <Center>
       <Flex bg="white" p={{base: 5, md: 20}} w="80%" justifyContent="center" alignItems="center">
         <Box shadow="xl" bg="white" px={8} py={20}>
-          <SimpleGrid mb={24} alignItems="center"
-            columns={{ base: 1, md: 4 }}
-            spacingY={{ base: 10, md: 32 }}
-            spacingX={{ base: 10, md: 24 }}>
-            { categories && categories.length > 0 && categories.map((cat, index) => (
-              <>
+          { categories && categories.length > 0 && categories.map((cat, index) => (
+            <SimpleGrid key={index} mb={24} alignItems={index % 2 === 0 ? "start" : "center"}
+              direction={index % 2 === 0 ? "row" : "row-reverse"}
+              columns={{ base: 1, md: 2 }}
+              spacingY={{ base: 10, md: 32 }}
+              spacingX={{ base: 10, md: 24 }}>
                 <Dialog cat={cat}/>
                 <ImageBox cat={cat}/>
-              </>
-            ))}
-          </SimpleGrid>
+            </SimpleGrid>
+          ))}
         </Box>
       </Flex>
     </Center>
