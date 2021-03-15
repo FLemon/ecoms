@@ -4,28 +4,30 @@ import {
 } from "@chakra-ui/react"
 import Gallery from "react-photo-gallery";
 import S from "string"
+import ChakraUIRenderer from 'chakra-ui-markdown-renderer'
+import ReactMarkdown from 'react-markdown'
 
 export default function ShopFront(props) {
   const { categories } = props
-  const Dialog = ({cat}) => (
-    <Box>
+  const Dialog = ({cat, bg}) => (
+    <Box bg={bg} p={5}>
       <Heading as="h2" mb={4} fontWeight="extrabold"
         letterSpacing="tight" lineHeight={{ md: "shorter" }}
         fontSize={{ base: "2xl", md: "4xl" }}
         textAlign={{ base: "center", md: "left" }}
-        color={useColorModeValue("red.300", "red.400")}
+        color={ bg === "white" ? useColorModeValue("red.300", "red.400") : "white"}
         textShadow="2px 0 currentcolor">
         {S(cat.slug).humanize().titleCase().s}
       </Heading>
-      <Text fontSize={{ md: "lg" }} mb={5}
-        textAlign={{ base: "center", sm: "left" }}
-        color={useColorModeValue("red.300", "red.350")}>
-        {cat.description}
+      <Text fontSize={{ md: "md" }} mb={5} letterSpacing="tight" lineHeight={{ md: "shorter" }}
+        textAlign={{ base: "left" }}
+        color={ bg === "white" ? useColorModeValue("red.300", "red.350") : "white"}>
+        <ReactMarkdown renderers={ChakraUIRenderer()} source={cat.description} escapeHtml={false} />
       </Text>
       <Button w={{ base: "full", sm: "auto" }} size="lg" as="a" href={`/shop/${cat.slug}`}
-        bg={useColorModeValue("red.400", "gray.600")}
-        _hover={{ bg: useColorModeValue("red.300", "red.500") }}
-        color="white">
+        bg={ bg === "white" ? useColorModeValue("red.300", "red.400") : "white"}
+        _hover={{ bg: bg === "white" ? useColorModeValue("red.500", "red.700") : useColorModeValue("red.100", "red.200") }}
+        color={ bg === "white" ? "white" : "red.300" }>
         View Products
       </Button>
     </Box>
@@ -37,14 +39,16 @@ export default function ShopFront(props) {
       p.images.map(i => {
         photos.push({
           src: i.url,
-          width: i.width === i.height ? 1 : (i.width > i.height ? 4 : 3),
-          height: i.width === i.height ? 1 : (i.width > i.height ? 3 : 4),
+          width: i.width === i.height ? 1 : (i.width > i.height ? 16 : 9),
+          height: i.width === i.height ? 1 : (i.width > i.height ? 9 : 16),
         })
       })
     })
     return (
-      <Box w="full" h="500px" overflow="auto">
-        {photos.length > 0 && <Gallery targetRowHeight={200} photos={photos} />}
+      <Box h="full" overflowY="scroll" bg="white">
+        {photos.length > 0 && (
+          <Gallery direction="column" margin={0} columns={5} photos={photos} />
+        )}
       </Box>
     )
   }
@@ -54,12 +58,11 @@ export default function ShopFront(props) {
       <Flex bg="white" p={{base: 5, md: 20}} w="80%" justifyContent="center" alignItems="center">
         <Box shadow="xl" bg="white" px={8} py={20}>
           { categories && categories.length > 0 && categories.map((cat, index) => (
-            <SimpleGrid key={index} mb={24} alignItems={index % 2 === 0 ? "start" : "center"}
+            <SimpleGrid key={index} mb={10} alignItems="start" h="400px"
               direction={index % 2 === 0 ? "row" : "row-reverse"}
               columns={{ base: 1, md: 2 }}
-              spacingY={{ base: 10, md: 32 }}
-              spacingX={{ base: 10, md: 24 }}>
-                <Dialog cat={cat}/>
+              spacingY={{ base: 10, md: 32 }}>
+                <Dialog cat={cat} bg={ index % 2 === 0 ? "red.300" : "white"}/>
                 <ImageBox cat={cat}/>
             </SimpleGrid>
           ))}
