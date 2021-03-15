@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import { IoClose, IoMenu } from "react-icons/io5";
+import { IoClose, IoMenu, IoHome, IoChevronForward } from "react-icons/io5";
 import { useRouter } from 'next/router'
 import { useShoppingCart } from "use-shopping-cart"
 import { loadStripe } from '@stripe/stripe-js'
 
 import {
-  Collapse, useDisclosure, useColorModeValue, Divider, Spacer, SimpleGrid, Heading,
+  Collapse, useColorModeValue, Divider, Spacer, SimpleGrid, Heading,
   Center, Stack, Box, Flex, Text, Link, Alert, AlertIcon, AlertDescription,
   AlertTitle, HStack
 } from "@chakra-ui/react"
@@ -32,8 +32,7 @@ const MenuLinks = ({ isOpen, categories }) => {
         {categories.map(cat => (
           <Link fontWeight="bold" rounded="md" key={cat.slug} href={`/shop/${cat.slug}`}
             alignItems="center" justifyContent="center" bg="white" px={5} py={3}
-            _hover={{ color: "white", bg: useColorModeValue("red.300", "red.400") }}
-          >
+            _hover={{ color: "white", bg: useColorModeValue("red.300", "red.400") }}>
             <Center><Text fontSize="lg">{S(cat.slug).humanize().titleCase().s}</Text></Center>
           </Link>
         ))}
@@ -70,7 +69,7 @@ const CategoryCrumb = ({categorySlug}) => {
   if (categorySlug) {
     return (
       <>
-        <span>></span>
+        <span><IoChevronForward/></span>
         <Link href={`/shop/${categorySlug}`}>
           {S(categorySlug).humanize().titleCase().s}
         </Link>
@@ -84,7 +83,7 @@ const ProductCrumb = ({categorySlug, productSlug}) => {
   if (productSlug) {
     return (
       <>
-        <span>></span>
+        <span><IoChevronForward/></span>
         <Link href={`/shop/${categorySlug}/${productSlug}`}>
           {S(productSlug).humanize().titleCase().s}
         </Link>
@@ -100,8 +99,8 @@ const Breadcrumb = ({categorySlug, productSlug}) => {
     <SimpleGrid columns={{sm: 2, md:4}} p="4">
       <Spacer />
       <HStack maxW="300px">
-        <Link href="/shop">HOME</Link>
-        <CategoryCrumb categorySlug={categorySlug}/>
+        <Link href="/shop"><IoHome/></Link>
+        {categorySlug === "p" ? "" : <CategoryCrumb categorySlug={categorySlug}/>}
         <ProductCrumb categorySlug={categorySlug} productSlug={productSlug}/>
       </HStack>
     </SimpleGrid>
@@ -177,14 +176,14 @@ export default function Header(props) {
   return(
     <SimpleGrid columns={1}>
       <NavBarContainer>
-        <Logo w="150px"/>
+        <Logo/>
         <Checkout />
         <MenuToggle toggle={toggle} isOpen={isOpen} />
         <MenuLinks isOpen={isOpen} categories={props.categories} />
       </NavBarContainer>
       <CheckoutAlert />
       <Divider orientation="horizontal" />
-      <Breadcrumb categorySlug={props.categorySlug} productSlug={props.productSlug} />
+      {props.categorySlug && <Breadcrumb categorySlug={props.categorySlug} productSlug={props.productSlug} />}
       <Divider orientation="horizontal" />
     </SimpleGrid>
   )

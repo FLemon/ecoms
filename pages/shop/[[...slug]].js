@@ -6,13 +6,18 @@ import DataClient from '@components/DataClient'
 import ProductList from '@components/ProductList'
 import ProductDetails from '@components/ProductDetails'
 import ShopFront from '@components/ShopFront'
+import Post from '@components/Post'
 import { CarouselProvider } from "pure-react-carousel"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export default function Shop(props) {
-  const { categorySlug, productSlug, productVariants } = props
+  const { posts, postSlug, categorySlug, productSlug, productVariants } = props
   const PageComponent = () => {
+    if (postSlug) {
+      const post = posts.find(p => p.slug === postSlug)
+      return <Post post={post}/>
+    }
     if (productSlug) {
       const product = props.products.filter(obj => (obj.slug === productSlug))[0]
       const images = []
@@ -47,17 +52,23 @@ export default function Shop(props) {
 export async function getStaticProps({ params }) {
   let categorySlug = ""
   let productSlug = ""
+  let postSlug = ""
   if (params && params.slug) {
     [categorySlug, productSlug] = params.slug
+  }
+  if (categorySlug === "pages") {
+    postSlug = productSlug
   }
 
   return {
     props: {
+      postSlug,
       categorySlug,
       productSlug: productSlug || null,
       categories: await DataClient.getCategories(),
       products: await DataClient.getCategoryProducts(categorySlug),
-      productVariants: await DataClient.getProductVariants(productSlug)
+      productVariants: await DataClient.getProductVariants(productSlug),
+      posts: await DataClient.getPosts()
     }
   }
 }
@@ -65,6 +76,7 @@ export async function getStaticProps({ params }) {
 export async function getStaticPaths() {
   let paths = [{ params: { slug: [] } }]
   const categories = await DataClient.getCategories()
+  const posts = await DataClient.getPosts()
   await Promise.all(categories.map(async cat => {
     let productPaths = []
     paths.push({ params: { slug: [cat.slug] } })
@@ -72,6 +84,9 @@ export async function getStaticPaths() {
     productPaths = products.map(pro => {
       paths.push({ params: { slug: [cat.slug, pro.slug] } })
     })
+  }))
+  await Promise.all(posts.map(async post => {
+    paths.push({ params: { slug: ["pages", post.slug]}})
   }))
   return {
     paths,

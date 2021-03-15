@@ -9,6 +9,25 @@ const client = new ApolloClient({
   }
 })
 
+const getPosts = async () => {
+  const { data } = await client.query({
+    query: gql`
+      query {
+        posts {
+          slug
+          section {
+            content
+            header
+            images { url, width, height }
+          }
+          is_support
+        }
+      }
+    `
+  })
+  return data.posts
+}
+
 const getCategories = async () => {
   const { data } = await client.query({
     query: gql`
@@ -16,6 +35,8 @@ const getCategories = async () => {
         categories {
           name_cn
           slug
+          description
+          products { images { url }}
         }
       }
     `
@@ -101,4 +122,7 @@ const getInventories = async () => {
   return inventories
 }
 
-export default { getCategories, getCategoryProducts, getProductVariants, getInventories }
+export default {
+  getCategories, getCategoryProducts, getProductVariants, getInventories,
+  getPosts
+}

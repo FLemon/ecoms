@@ -8,7 +8,7 @@ import { FaRulerCombined } from "react-icons/fa";
 export default function SizeGuide(props) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { product } = props
-  const title = S(`kissy ${product.slug} size guide`).humanize().titleCase().s
+  const title = S(`kissy ${product && product.slug} size guide`).humanize().titleCase().s
 
   return (
     <>
@@ -34,7 +34,7 @@ export default function SizeGuide(props) {
                   shadow={{base:"",sm:"lg"}}
                   spacing={{base:"20px", sm: "2px"}}
                 >
-                  {product.size_guide.map((guide, pid) => {
+                  {product.size_guide && product.size_guide.map((guide, pid) => {
                     return (
                       <Flex
                         direction={{ base: "row", sm: "column" }}

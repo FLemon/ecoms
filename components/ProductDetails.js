@@ -208,7 +208,6 @@ export default function ProductDetails(props) {
             </HStack>
           </HStack>
           <Badge variant="solid" colorScheme="red">{currentVariant.limitedEdition && "Limited Edition"}</Badge>
-          <SizeGuide product={product}/>
         </Box>
       </SimpleGrid>
     </Center>
