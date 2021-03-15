@@ -2,14 +2,15 @@ import Head from 'next/head'
 
 import Header from '@components/Header'
 import Footer from '@components/Footer'
+import { GaTracking } from '@components/GaTracking'
 
 export default function Layout(props) {
   return (
     <div className="container">
-      <Head>
+      <GaTracking>
         <title>Kissy如吻 UK</title>
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </GaTracking>
 
       <main>
         <Header {...props}/>
