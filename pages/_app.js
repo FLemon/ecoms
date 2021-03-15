@@ -1,9 +1,12 @@
 import { ChakraProvider } from "@chakra-ui/react"
+import { TrackingProvider } from '@components/GaTrackProvider'
 
 function Application({ Component, pageProps }) {
   return (
     <ChakraProvider>
-      <Component {...pageProps} />
+      <TrackingProvider>
+        <Component {...pageProps} />
+      </TrackingProvider>
     </ChakraProvider>
   )
 }

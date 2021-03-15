@@ -18,7 +18,7 @@ const getPosts = async () => {
           section {
             content
             header
-            images { url, width, height }
+            images { url }
           }
           is_support
         }
@@ -32,11 +32,15 @@ const getCategories = async () => {
   const { data } = await client.query({
     query: gql`
       query {
-        categories {
+        categories(sort: "order:asc") {
           name_cn
           slug
           description
-          products { images { url }}
+          products {
+            product_variants {
+              images { url, width, height }
+            }
+          }
         }
       }
     `

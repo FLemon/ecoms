@@ -105,7 +105,7 @@ export default function ProductDetails(props) {
 
     const SizeOptions = () => {
       return options.map(v => (
-        <option key={v} value={v}>{v.toUpperCase()}</option>
+        <option key={v} value={v}>{v.replace("-", "/").toUpperCase()}</option>
       ))
     }
 
@@ -207,7 +207,8 @@ export default function ProductDetails(props) {
               </Button>
             </HStack>
           </HStack>
-          <Badge variant="solid" colorScheme="red">{currentVariant.limitedEdition && "Limited Edition"}</Badge>
+          <Badge m={2} variant="solid" colorScheme="red">{currentVariant.limitedEdition && "Limited Edition"}</Badge>
+          <SizeGuide product={product}/>
         </Box>
       </SimpleGrid>
     </Center>

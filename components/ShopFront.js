@@ -10,10 +10,10 @@ import ReactMarkdown from 'react-markdown'
 export default function ShopFront(props) {
   const { categories } = props
   const Dialog = ({cat, bg}) => (
-    <Box bg={bg} p={5}>
-      <Heading as="h2" mb={4} fontWeight="extrabold"
+    <Box w={{base:"full", sm: "60%"}} bg={bg} p={5}>
+      <Heading as="h2" mb={4} fontWeight="bold"
         letterSpacing="tight" lineHeight={{ md: "shorter" }}
-        fontSize={{ base: "2xl", md: "4xl" }}
+        fontSize={{ base: "xl", md: "4xl" }}
         textAlign={{ base: "center", md: "left" }}
         color={ bg === "white" ? useColorModeValue("red.300", "red.400") : "white"}
         textShadow="2px 0 currentcolor">
@@ -36,18 +36,20 @@ export default function ShopFront(props) {
   const ImageBox = ({cat}) => {
     let photos = []
     cat.products.forEach(p => {
-      p.images.map(i => {
-        photos.push({
-          src: i.url,
-          width: i.width === i.height ? 1 : (i.width > i.height ? 16 : 9),
-          height: i.width === i.height ? 1 : (i.width > i.height ? 9 : 16),
+      p.product_variants.forEach(pv => {
+        pv.images.map(i => {
+          photos.push({
+            src: i.url,
+            width: i.width === i.height ? 1 : (i.width > i.height ? 16 : 9),
+            height: i.width === i.height ? 1 : (i.width > i.height ? 9 : 16),
+          })
         })
       })
     })
     return (
-      <Box h="full" overflowY="scroll" bg="white">
+      <Box w={{ base: "full", sm: "40%" }} maxH="400px" overflowY="hidden" bg="white">
         {photos.length > 0 && (
-          <Gallery direction="column" margin={0} columns={5} photos={photos} />
+          <Gallery margin={0} photos={photos} targetRowHeight={150}/>
         )}
       </Box>
     )
@@ -55,16 +57,14 @@ export default function ShopFront(props) {
 
   return (
     <Center>
-      <Flex bg="white" p={{base: 5, md: 20}} w="80%" justifyContent="center" alignItems="center">
+      <Flex bg="white" p={{base: 5, md: 20}} justifyContent="center" alignItems="center">
         <Box shadow="xl" bg="white" px={8} py={20}>
           { categories && categories.length > 0 && categories.map((cat, index) => (
-            <SimpleGrid key={index} mb={10} alignItems="start" h="400px"
-              direction={index % 2 === 0 ? "row" : "row-reverse"}
-              columns={{ base: 1, md: 2 }}
-              spacingY={{ base: 10, md: 32 }}>
-                <Dialog cat={cat} bg={ index % 2 === 0 ? "red.300" : "white"}/>
-                <ImageBox cat={cat}/>
-            </SimpleGrid>
+            <Flex mb={10} key={index} wrap="wrap" direction={index % 2 === 0 ? "row" : "row-reverse"}
+              w={{ base: "xs", sm: "md", md: "2xl", lg: "6xl" }}>
+              <Dialog cat={cat} bg={ index % 2 === 0 ? "red.300" : "white"}/>
+              <ImageBox cat={cat}/>
+            </Flex>
           ))}
         </Box>
       </Flex>
