@@ -19,11 +19,11 @@ export default function ShopFront(props) {
         textShadow="2px 0 currentcolor">
         {S(cat.slug).humanize().titleCase().s}
       </Heading>
-      <Text fontSize={{ md: "md" }} mb={5} letterSpacing="tight" lineHeight={{ md: "shorter" }}
+      <Box fontSize={{ md: "md" }} mb={5} letterSpacing="tight" lineHeight={{ md: "shorter" }}
         textAlign={{ base: "left" }}
         color={ bg === "white" ? useColorModeValue("red.300", "red.350") : "white"}>
         <ReactMarkdown renderers={ChakraUIRenderer()} source={cat.description} escapeHtml={false} />
-      </Text>
+      </Box>
       <Button w={{ base: "full", sm: "auto" }} size="lg" as="a" href={`/shop/${cat.slug}`}
         bg={ bg === "white" ? useColorModeValue("red.300", "red.400") : "white"}
         _hover={{ bg: bg === "white" ? useColorModeValue("red.500", "red.700") : useColorModeValue("red.100", "red.200") }}
