@@ -37,6 +37,7 @@ export default function SizeGuide(props) {
                   {product.size_guide && product.size_guide.map((guide, pid) => {
                     return (
                       <Flex
+                        key={pid}
                         direction={{ base: "row", sm: "column" }}
                         bg={useColorModeValue("white", "red.200")}
                       >

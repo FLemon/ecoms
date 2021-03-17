@@ -6,9 +6,7 @@ import Features from '@components/Features'
 
 export default function Home(props) {
   return (
-    <Layout {...props}>
-      <Features {...props}/>
-    </Layout>
+    <Features {...props}/>
   )
 }
 

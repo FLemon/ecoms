@@ -20,7 +20,7 @@ const MenuLinks = ({ isOpen, categories }) => {
   return (
     <Box
       display={{ base: isOpen ? "block" : "none", md: "block" }}
-      flexBasis={{ base: "100%", md: "auto" }}
+      flexBasis={{ base: "100%", md: "auto" }} ml={5}
     >
       <Stack
         spacing={2}
@@ -43,7 +43,7 @@ const MenuLinks = ({ isOpen, categories }) => {
 
 const MenuToggle = ({ toggle, isOpen }) => {
   return (
-    <Box display={{ base: "block", md: "none" }} onClick={toggle}>
+    <Box ml={5} isplay={{ base: "block", md: "none" }} onClick={toggle}>
       {isOpen ? <IoClose /> : <IoMenu />}
     </Box>
   )
@@ -177,6 +177,7 @@ export default function Header(props) {
     <SimpleGrid columns={1}>
       <NavBarContainer>
         <Logo/>
+        <Spacer />
         <Checkout />
         <MenuToggle toggle={toggle} isOpen={isOpen} />
         <MenuLinks isOpen={isOpen} categories={props.categories} />
