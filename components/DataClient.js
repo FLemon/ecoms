@@ -117,7 +117,7 @@ const getInventories = async () => {
       name: S(pv.product.slug).humanize().titleCase().s,
       sku: `${pv.slug}-${size.slug}`,
       price: (pv.gbp_in_uk || pv.product.gbp_in_uk)*100,
-      image: pv.images[0].url,
+      image: pv.images[0] && pv.images[0].url,
       description: `colour: ${pv.colour.slug}, size: ${size.slug}`,
       currency: "GBP"
     }))
