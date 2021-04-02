@@ -10,10 +10,6 @@ export default function SizeGuide(props) {
   const title = S(`kissy如吻 size guides`).humanize().titleCase().s
   const guidePost = props.posts.find(p => p.slug === "size-guide")
 
-  console.log(guidePost)
-  console.log(isOpen)
-  console.log(onOpen)
-  console.log(onClose)
   return (
     <>
       <Button leftIcon={<FaRulerCombined />} onClick={onOpen}>Size Guide</Button>
