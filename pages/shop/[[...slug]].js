@@ -29,7 +29,7 @@ export default function Shop(props) {
 
       return (
         <CarouselProvider naturalSlideWidth={400} naturalSlideHeight={500} infinite={true}
-          visibleSlides={1} totalSlides={images.length} hasMasterSpinner lockOnWindowScroll>
+          visibleSlides={1} totalSlides={images.length || 1} hasMasterSpinner lockOnWindowScroll>
           <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />
         </CarouselProvider>
       )

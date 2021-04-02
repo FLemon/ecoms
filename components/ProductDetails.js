@@ -24,7 +24,7 @@ const transformVariant = ({variant, size, product}) => {
       size: variant.sizes[0] && variant.sizes[0].slug,
       sizes: variant.sizes.filter(s => s.quantity > 0),
       price: variantPrice*100,
-      image: variant.images[0].url,
+      image: variant.images[0] && variant.images[0].url,
       limitedEdition: variant.limited_edition,
       ...result
     }
@@ -84,7 +84,8 @@ export default function ProductDetails(props) {
   let sliders = []
   let dots = []
 
-  images.forEach((image, index) => {
+  const mySlides = images.length ? images : new Array({url: fallbackImage})
+  mySlides.forEach((image, index) => {
     sliders.push(<Slide key={index} index={index}><ImageWithZoom src={image.url}></ImageWithZoom></Slide>)
     dots.push(<Dot key={index} slide={index}><Center maxW={100}><Image src={image.url} /></Center></Dot>)
   })
@@ -130,8 +131,8 @@ export default function ProductDetails(props) {
     }
 
     return (
-      <Slider>
-        {images.map((image, index) => (
+      <Slider style={{zIndex:-1}}>
+        {mySlides.map((image, index) => (
           <Link key={index}>
             <Slide onClick={selectImage}>
               <Center h="100%"><Image index={index} px="2px" src={image.url}/></Center>
@@ -166,7 +167,7 @@ export default function ProductDetails(props) {
               <Slider>{sliders}</Slider>
             </Box>
             <CarouselProvider h="100%" naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
-              visibleSlides={4} totalSlides={images.length}>
+              visibleSlides={4} totalSlides={mySlides.length}>
               <Box pos="relative">
                 <ButtonBack>
                   <Center z-index="1" pos="absolute" top="0" h="100%" w="20px" left="0" bg="white" opacity="80%" align="middle">
@@ -175,7 +176,7 @@ export default function ProductDetails(props) {
                 </ButtonBack>
                 <SubSlider />
                 <ButtonNext>
-                  <Center pos="absolute" top="0" h="100%" w="20px" right="0" bg="white" opacity="80%" align="middle">
+                  <Center z-index="1" pos="absolute" top="0" h="100%" w="20px" right="0" bg="white" opacity="80%" align="middle">
                     {`>`}
                   </Center>
                 </ButtonNext>
@@ -208,7 +209,7 @@ export default function ProductDetails(props) {
             </HStack>
           </HStack>
           <Badge m={2} variant="solid" colorScheme="red">{currentVariant.limitedEdition && "Limited Edition"}</Badge>
-          <SizeGuide product={product}/>
+          <SizeGuide posts={props.posts}/>
         </Box>
       </SimpleGrid>
     </Center>

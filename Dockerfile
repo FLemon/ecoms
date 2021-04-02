@@ -1,10 +1,11 @@
-FROM node:12
+FROM node:12.21.0
 
 WORKDIR /app
 
-COPY package.json .
+COPY package.json package-lock.json .
 
-RUN npm install -g npm && npm install
+RUN npm install -g npm@6.14.11
+RUN npm install
 
 EXPOSE 3000
 

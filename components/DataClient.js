@@ -19,6 +19,7 @@ const getPosts = async () => {
             content
             header
             images { url }
+            meta
           }
           is_support
         }
