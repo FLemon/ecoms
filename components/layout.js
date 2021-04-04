@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Header from '@components/Header'
 import Footer from '@components/Footer'
 import { GaTracking } from '@components/GaTracking'
+import { Box } from "@chakra-ui/react"
 
 export default function Layout(props) {
   return (
@@ -15,7 +16,7 @@ export default function Layout(props) {
 
       <main>
         <Header {...props}/>
-        <div>{props.children}</div>
+        <Box pt="80px">{props.children}</Box>
       </main>
 
       <Footer {...props}/>

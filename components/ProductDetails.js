@@ -161,7 +161,7 @@ export default function ProductDetails(props) {
   return (
     <Center>
       <SimpleGrid columns={{sm: 1, md: 2}} spacing="4" p={2}>
-        <Box>
+        <Box ml='auto' mr={0}>
           <SimpleGrid w="350px" columns={1} spacing="4px">
             <Box px="10px">
               <Slider>{sliders}</Slider>
@@ -184,13 +184,13 @@ export default function ProductDetails(props) {
             </CarouselProvider>
           </SimpleGrid>
         </Box>
-        <Box>
+        <Box maxW='400px'>
           <Heading>
             {S(currentVariant.name).humanize().titleCase().s}
           </Heading>
           <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours} limited={currentVariant.limitedEdition}/>
           <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes.map(s => s.slug)}/>
-          <HStack spacing={4} py={2}>
+          <HStack spacing={4} py={2} mb={10}>
             <Stat maxW={40}>
               <StatNumber textAlign="center" color="black">
                 {formatCurrencyString({value: currentVariant.price, currency: currentVariant.currency})}

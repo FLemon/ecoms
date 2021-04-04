@@ -36,13 +36,11 @@ export default function ProductList(props) {
   }
   return (
     <Center>
-      <SimpleGrid maxW={800} bg="gray.50" columns={{sm: 2, md: 4}} spacing="2"
-        p={5} textAlign="center" rounded="lg" color="gray.400">
-        <Spacer />
+      <SimpleGrid maxW={800} columns={{sm: 2, md: 4}} spacing="2"
+        p={5} textAlign="center" rounded="lg">
         {products.map(product => (
           <Product key={product.slug} categorySlug={categorySlug} product={product}/>
         ))}
-        <Spacer />
       </SimpleGrid>
     </Center>
   )

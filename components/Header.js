@@ -17,8 +17,10 @@ import Logo from "@components/Logo"
 import Checkout from "@components/Checkout"
 
 const MenuLinks = ({ isOpen, categories }) => {
+  const router = useRouter()
   return (
     <Box
+      bg='white'
       display={{ base: isOpen ? "block" : "none", md: "block" }}
       flexBasis={{ base: "100%", md: "auto" }} ml={5}
     >
@@ -32,7 +34,9 @@ const MenuLinks = ({ isOpen, categories }) => {
         {categories.map(cat => (
           <Link fontWeight="bold" rounded="md" key={cat.slug} href={`/shop/${cat.slug}`}
             alignItems="center" justifyContent="center" bg="white" px={5} py={3}
-            _hover={{ color: "white", bg: useColorModeValue("red.300", "red.400") }}>
+            color={router.asPath.match(`/shop/${cat.slug}/*`) && 'white'} borderWidth='1px' borderColor='white'
+            bg={router.asPath.match(`/shop/${cat.slug}/*`) && useColorModeValue("red.300", "red.400")}
+            _hover={{ borderColor: useColorModeValue("red.300", "red.400") }}>
             <Center><Text fontSize="lg">{S(cat.slug).humanize().titleCase().s}</Text></Center>
           </Link>
         ))}
@@ -43,7 +47,7 @@ const MenuLinks = ({ isOpen, categories }) => {
 
 const MenuToggle = ({ toggle, isOpen }) => {
   return (
-    <Box ml={5} isplay={{ base: "block", md: "none" }} onClick={toggle}>
+    <Box ml={5} display={{ base: "block", md: "none" }} onClick={toggle}>
       {isOpen ? <IoClose /> : <IoMenu />}
     </Box>
   )
@@ -51,59 +55,13 @@ const MenuToggle = ({ toggle, isOpen }) => {
 
 const NavBarContainer = ({ children }) => {
   return (
-    <Flex
-      as="nav"
-      align="center"
-      justify="space-between"
-      wrap="wrap"
-      w="100%"
-      p={8}
-      bg={["primary.500", "primary.500", "transparent", "transparent"]}
+    <Flex as="nav" align="center" justify="space-between" wrap="wrap"
+      w="100%" h="80px" py={2} px={8} pos="fixed" top={0} left={0}
+      bg={["white", "white", "white", "white"]} zIndex={999}
+      borderBottomWidth="1px" borderColor="grey.50"
     >
       {children}
     </Flex>
-  )
-}
-
-const CategoryCrumb = ({categorySlug}) => {
-  if (categorySlug) {
-    return (
-      <>
-        <span><IoChevronForward/></span>
-        <Link href={`/shop/${categorySlug}`}>
-          {S(categorySlug).humanize().titleCase().s}
-        </Link>
-      </>
-    )
-  }
-  return <></>
-}
-
-const ProductCrumb = ({categorySlug, productSlug}) => {
-  if (productSlug) {
-    return (
-      <>
-        <span><IoChevronForward/></span>
-        <Link href={`/shop/${categorySlug}/${productSlug}`}>
-          {S(productSlug).humanize().titleCase().s}
-        </Link>
-      </>
-    )
-  }
-  return <></>
-}
-
-const Breadcrumb = ({categorySlug, productSlug}) => {
-
-  return (
-    <SimpleGrid columns={{sm: 2, md:4}} p="4">
-      <Spacer />
-      <HStack maxW="300px">
-        <Link href="/shop"><IoHome/></Link>
-        {categorySlug === "p" ? "" : <CategoryCrumb categorySlug={categorySlug}/>}
-        <ProductCrumb categorySlug={categorySlug} productSlug={productSlug}/>
-      </HStack>
-    </SimpleGrid>
   )
 }
 
@@ -176,16 +134,14 @@ export default function Header(props) {
   return(
     <SimpleGrid columns={1}>
       <NavBarContainer>
-        <Logo/>
         <Spacer />
-        <Checkout />
+        <Logo/>
         <MenuToggle toggle={toggle} isOpen={isOpen} />
         <MenuLinks isOpen={isOpen} categories={props.categories} />
+        <Checkout />
+        <Spacer />
       </NavBarContainer>
       <CheckoutAlert />
-      <Divider orientation="horizontal" />
-      {props.categorySlug && <Breadcrumb categorySlug={props.categorySlug} productSlug={props.productSlug} />}
-      <Divider orientation="horizontal" />
     </SimpleGrid>
   )
 }
