@@ -15,11 +15,12 @@ export default function WithSubnavigation(props) {
   const navItems = props.categories.map(cat => (
     {
       label: S(cat.slug).humanize().titleCase().s,
+      href: `/shop/${cat.slug}`,
       children: cat.products.map(pro => (
         {
           label: S(pro.slug).humanize().titleCase().s,
           subLabel: pro.name_cn,
-          href: '#',
+          href: `/shop/${cat.slug}/${pro.slug}`,
           highlight: pro.limited_edition
         }
       ))
