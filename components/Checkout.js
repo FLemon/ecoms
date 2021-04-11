@@ -93,8 +93,8 @@ export default function Checkout(props) {
       <IconButton bg="" _hover={{ bg: useColorModeValue("red.300", "red.400") }} ref={cartRef} onClick={onOpen}
         isRound size="md" icon={
           <>
-            <IoCartOutline size="2em" />
-            <Box as="span" pos="absolute" top={0} right={0} display="inline-flex" alignItems="center" justifyContent="center"
+            <IoCartOutline size="30px" />
+            <Box as="span" pos="absolute" top={1} right={1} display="inline-flex" alignItems="center" justifyContent="center"
               px={2} py={1} fontSize="xs" fontWeight="bold" lineHeight="none" color="red.100" transform="translate(50%,-50%)"
               bg="red.600" rounded="full" suppressHydrationWarning
             >

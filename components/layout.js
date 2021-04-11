@@ -16,7 +16,7 @@ export default function Layout(props) {
 
       <main>
         <Header {...props}/>
-        <Box pt="80px">{props.children}</Box>
+        <Box pt="60px">{props.children}</Box>
       </main>
 
       <Footer {...props}/>

@@ -37,10 +37,11 @@ const getCategories = async () => {
           name_cn
           slug
           description
-          products {
-            product_variants {
-              images { url, width, height }
-            }
+          images(limit:1) { url }
+          products(sort: "limited_edition:asc") {
+            slug
+            name_cn
+            limited_edition
           }
         }
       }
@@ -56,16 +57,16 @@ const getCategoryProducts = async (categorySlug) => {
   const { data } = await client.query({
     query: gql`
       query GetProducts($categorySlug: String!) {
-        products(where: { category: { slug: $categorySlug }}) {
-          slug
-          name_cn
-          gbp_in_uk
-          size_guide
-          product_variants(limit:1) {
-            colour { slug, name_cn },
+        products(
+          where: { category: { slug: $categorySlug }},
+          sort: "limited_edition:asc"
+        ) {
+            slug
+            name_cn
+            gbp_in_uk
             images(limit:1) { url }
+            limited_edition
           }
-        }
       }
     `,
     variables: { categorySlug }

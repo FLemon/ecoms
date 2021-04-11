@@ -1,147 +1,223 @@
-import { useState, useEffect } from "react"
-import { IoClose, IoMenu, IoHome, IoChevronForward } from "react-icons/io5";
-import { useRouter } from 'next/router'
-import { useShoppingCart } from "use-shopping-cart"
-import { loadStripe } from '@stripe/stripe-js'
-
 import {
-  Collapse, useColorModeValue, Divider, Spacer, SimpleGrid, Heading,
-  Center, Stack, Box, Flex, Text, Link, Alert, AlertIcon, AlertDescription,
-  AlertTitle, HStack
-} from "@chakra-ui/react"
-import S from "string"
-import axios from "axios"
-import useSWR from 'swr'
-
+  Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, Link, Popover,
+  PopoverTrigger, PopoverContent, useColorModeValue, useBreakpointValue,
+  useDisclosure, Badge, HStack, Center
+} from '@chakra-ui/react';
+import {
+  HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon,
+} from '@chakra-ui/icons';
 import Logo from "@components/Logo"
 import Checkout from "@components/Checkout"
+import S from "string"
 
-const MenuLinks = ({ isOpen, categories }) => {
-  const router = useRouter()
+export default function WithSubnavigation(props) {
+  const { isOpen, onToggle } = useDisclosure();
+  const navItems = props.categories.map(cat => (
+    {
+      label: S(cat.slug).humanize().titleCase().s,
+      children: cat.products.map(pro => (
+        {
+          label: S(pro.slug).humanize().titleCase().s,
+          subLabel: pro.name_cn,
+          href: '#',
+          highlight: pro.limited_edition
+        }
+      ))
+    }
+  ))
+
   return (
-    <Box
-      bg='white'
-      display={{ base: isOpen ? "block" : "none", md: "block" }}
-      flexBasis={{ base: "100%", md: "auto" }} ml={5}
-    >
-      <Stack
-        spacing={2}
-        align="center"
-        justify={["center", "space-between", "flex-end", "flex-end"]}
-        direction={["column", "row", "row", "row"]}
-        pt={[4, 4, 0, 0]}
-      >
-        {categories.map(cat => (
-          <Link fontWeight="bold" rounded="md" key={cat.slug} href={`/shop/${cat.slug}`}
-            alignItems="center" justifyContent="center" bg="white" px={5} py={3}
-            color={router.asPath.match(`/shop/${cat.slug}/*`) && 'white'} borderWidth='1px' borderColor='white'
-            bg={router.asPath.match(`/shop/${cat.slug}/*`) && useColorModeValue("red.300", "red.400")}
-            _hover={{ borderColor: useColorModeValue("red.300", "red.400") }}>
-            <Center><Text fontSize="lg">{S(cat.slug).humanize().titleCase().s}</Text></Center>
-          </Link>
-        ))}
+    <Box zIndex={999} pos="fixed" top={0} w="full" opacity="98%">
+      <Flex
+        bg={useColorModeValue('white', 'gray.800')}
+        color={useColorModeValue('gray.600', 'white')}
+        minH={'60px'}
+        py={{ base: 2 }}
+        px={{ base: 4 }}
+        borderBottom={1}
+        borderStyle={'solid'}
+        borderColor={useColorModeValue('gray.200', 'gray.900')}
+        align={'center'}>
+        <Flex
+          flex={{ base: 1, md: 'auto' }}
+          ml={{ base: -2 }}
+          display={{ base: 'flex', md: 'none' }}>
+          <IconButton
+            onClick={onToggle}
+            icon={
+              isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
+            }
+            variant={'ghost'}
+            aria-label={'Toggle Navigation'}
+          />
+        </Flex>
+        <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
+          <Logo/>
+
+          <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+            <DesktopNav navItems={navItems}/>
+          </Flex>
+        </Flex>
+
+        <Stack
+          flex={{ base: 1, md: 0 }}
+          justify={'flex-end'}
+          direction={'row'}
+          spacing={6}>
+          <Checkout />
+        </Stack>
+      </Flex>
+
+      <Collapse in={isOpen} animateOpacity>
+        <MobileNav navItems={navItems}/>
+      </Collapse>
+    </Box>
+  );
+}
+
+const DesktopNav = ({ navItems }) => {
+  return (
+    <Stack direction={'row'} spacing={4}>
+      {navItems.map((navItem) => (
+        <Box key={navItem.label}>
+          <Popover trigger={'hover'} placement={'bottom-start'}>
+            <PopoverTrigger>
+              <Link
+                p={2}
+                href={navItem.href ?? '#'}
+                fontSize={'sm'}
+                fontWeight={500}
+                color={useColorModeValue('gray.600', 'gray.200')}
+                _hover={{
+                  textDecoration: 'none',
+                  color: useColorModeValue('gray.800', 'white'),
+                }}>
+                {navItem.label}
+              </Link>
+            </PopoverTrigger>
+
+            {navItem.children && (
+              <PopoverContent
+                border={0}
+                boxShadow={'xl'}
+                bg={useColorModeValue('white', 'gray.800')}
+                p={4}
+                rounded={'xl'}
+                minW={'sm'}>
+                <Stack>
+                  {navItem.children.map((child) => (
+                    <DesktopSubNav key={child.label} {...child} />
+                  ))}
+                </Stack>
+              </PopoverContent>
+            )}
+          </Popover>
+        </Box>
+      ))}
+    </Stack>
+  );
+};
+
+const DesktopSubNav = ({ label, href, subLabel, highlight }) => {
+  return (
+    <Link
+      href={href}
+      role={'group'}
+      display={'block'}
+      p={2}
+      rounded={'md'}
+      _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}>
+      <Stack direction={'row'} align={'center'}>
+        <HStack>
+          <Text
+            transition={'all .3s ease'}
+            _groupHover={{ color: 'pink.400' }}
+            fontWeight={500}>
+            {label}
+          </Text>
+          <Center>
+            <Badge m={2} fontSize="6pt" variant="solid" colorScheme="pink">{ highlight && "Limited Edition" }</Badge>
+          </Center>
+        </HStack>
+        <Flex
+          transition={'all .3s ease'}
+          transform={'translateX(-10px)'}
+          opacity={0}
+          _groupHover={{ opacity: '100%', transform: 'translateX(0)' }}
+          justify={'flex-end'}
+          align={'center'}
+          flex={1}>
+          <Icon color={'pink.400'} w={5} h={5} as={ChevronRightIcon} />
+        </Flex>
       </Stack>
-    </Box>
-  )
-}
+    </Link>
+  );
+};
 
-const MenuToggle = ({ toggle, isOpen }) => {
+const MobileNav = ({ navItems }) => {
   return (
-    <Box ml={5} display={{ base: "block", md: "none" }} onClick={toggle}>
-      {isOpen ? <IoClose /> : <IoMenu />}
-    </Box>
-  )
-}
+    <Stack
+      bg={useColorModeValue('white', 'gray.800')}
+      p={4}
+      display={{ md: 'none' }}>
+      {navItems.map((navItem) => (
+        <MobileNavItem key={navItem.label} {...navItem} />
+      ))}
+    </Stack>
+  );
+};
 
-const NavBarContainer = ({ children }) => {
-  return (
-    <Flex as="nav" align="center" justify="space-between" wrap="wrap"
-      w="100%" h="80px" py={2} px={8} pos="fixed" top={0} left={0}
-      bg={["white", "white", "white", "white"]} zIndex={999}
-      borderBottomWidth="1px" borderColor="grey.50"
-    >
-      {children}
-    </Flex>
-  )
-}
-
-const CheckoutAlert = () => {
-  const { clearCart } = useShoppingCart()
-  const router = useRouter()
-  const stripeSessionId = router.query.stripe_session_id
-  const checkoutSessionUrl = `/api/checkout_session/${stripeSessionId}`
-  let alertStatus, alertMsg
-  useEffect(() => {
-    if (alertStatus === "success") {
-      clearCart()
-    }
-  }, [alertStatus])
-
-  const fetcher = async (url) => {
-    if (stripeSessionId) {
-      const res = await axios.get(url)
-      return res.data
-    } else {
-      return {}
-    }
-  }
-
-  const generateAlertProps = ({data, error}) => {
-    if (error) {
-      console.log(error)
-      return ["error", error.message]
-    }
-
-    if (!data) {
-      return ["", ""]
-    }
-
-    switch(data.paymentStatus) {
-      case "paid":
-        return ["success", "thank you for your payment"]
-      case "unpaid":
-        return ["warning", "payment canceled"]
-      default:
-        return ["", ""]
-    }
-  }
-
-  [alertStatus, alertMsg] = generateAlertProps(useSWR(checkoutSessionUrl, fetcher))
-
-  const returnCheckout = async () => {
-    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
-    await stripe.redirectToCheckout({ sessionId: stripeSessionId });
-  }
+const MobileNavItem = ({ label, children, href, highlight }) => {
+  const { isOpen, onToggle } = useDisclosure();
 
   return (
-    <Collapse in={alertStatus ? true : false} animateOpacity>
-      {alertStatus && (
-        <Alert alignItems="center" justifyContent="center" textAlign="center" status={alertStatus}>
-          <AlertIcon />
-          <AlertTitle>{S(alertMsg).humanize().titleCase().s}</AlertTitle>
-          {alertStatus === "warning" ? <AlertDescription><Link onClick={returnCheckout}>return to your payment</Link></AlertDescription> : <></>}
-        </Alert>
-      )}
-    </Collapse>
-  )
-}
+    <Stack spacing={4} onClick={children && onToggle}>
+      <Flex
+        py={2}
+        as={Link}
+        href={href ?? '#'}
+        justify={'space-between'}
+        align={'center'}
+        _hover={{
+          textDecoration: 'none',
+        }}>
+          <Text
+            fontWeight={600}
+            color={useColorModeValue('gray.600', 'gray.200')}>
+            {label}
+          </Text>
+        {children && (
+          <Icon
+            as={ChevronDownIcon}
+            transition={'all .25s ease-in-out'}
+            transform={isOpen ? 'rotate(180deg)' : ''}
+            w={6}
+            h={6}
+          />
+        )}
+      </Flex>
 
-export default function Header(props) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  const toggle = () => setIsOpen(!isOpen)
-
-  return(
-    <SimpleGrid columns={1}>
-      <NavBarContainer>
-        <Spacer />
-        <Logo/>
-        <MenuToggle toggle={toggle} isOpen={isOpen} />
-        <MenuLinks isOpen={isOpen} categories={props.categories} />
-        <Checkout />
-        <Spacer />
-      </NavBarContainer>
-      <CheckoutAlert />
-    </SimpleGrid>
-  )
-}
+      <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
+        <Stack
+          mt={2}
+          pl={4}
+          borderLeft={1}
+          borderStyle={'solid'}
+          borderColor={useColorModeValue('gray.200', 'gray.700')}
+          align={'start'}>
+          {children &&
+            children.map((child) => (
+              <Link key={child.label} py={2} href={child.href}>
+                <HStack>
+                  <Text>{child.label}</Text>
+                  <Center>
+                    <Badge m={2} fontSize="6pt" variant="solid" colorScheme="pink">{ child.highlight && "Limited Edition" }</Badge>
+                  </Center>
+                </HStack>
+              </Link>
+            ))}
+        </Stack>
+      </Collapse>
+    </Stack>
+  );
+};
