@@ -16,12 +16,12 @@ export default function ProductList(props) {
   }
   return (
     <Center>
-      <SimpleGrid maxW={800} columns={{base: 1, md: 3}} spacing="2"
-        p={5} textAlign="center" rounded="lg">
+      <SimpleGrid columns={{base: 1, md: 3}} spacing={6}
+        textAlign="center" rounded="lg">
         {products.map(product => (
           <Link key={product.slug} href={`/shop/${categorySlug}/${product.slug}`}
             bg="white" pb="8px"
-            _hover={{ color:"black", textDecor: "none" }}
+            _hover={{ textDecor: "none" }}
           >
             <ProductTile product={product} />
           </Link>

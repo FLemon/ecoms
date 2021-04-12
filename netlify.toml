@@ -2,8 +2,3 @@
   command = "npm run build"
   publish = "out_publish"
   functions = "out_functions"
-[[redirects]]
-  from = "/"
-  to = "/shop"
-  status = 301
-  force = true

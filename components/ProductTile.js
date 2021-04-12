@@ -7,13 +7,12 @@ import S from "string"
 export default function ProductSimple({ product }) {
   const imageSrc = product.images && product.images[0] && product.images[0].url || "/product-fallback.jpeg"
   return (
-    <Center py={12}>
+    <Center py={8}>
       <Box
         role={'group'}
         p={6}
         maxW={'330px'}
         w={'full'}
-        h={350}
         bg={useColorModeValue('white', 'gray.800')}
         boxShadow={'2xl'}
         rounded={'lg'}
@@ -23,7 +22,7 @@ export default function ProductSimple({ product }) {
           rounded={'lg'}
           mt={-12}
           pos={'relative'}
-          height={'230px'}
+          height={'350px'}
           _after={{
             transition: 'all .3s ease',
             content: '""',
@@ -43,7 +42,7 @@ export default function ProductSimple({ product }) {
           }}>
           <Image
             rounded={'lg'}
-            height={230}
+            height={350}
             width={282}
             objectFit={'cover'}
             src={imageSrc}

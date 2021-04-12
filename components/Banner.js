@@ -1,5 +1,5 @@
 import {
-  Flex, Text, Button, VStack, useBreakpointValue, Stack
+  Flex, Text, Button, VStack, useBreakpointValue, Stack, Link
 } from "@chakra-ui/react"
 
 export default function Banner(props) {
@@ -33,13 +33,12 @@ export default function Banner(props) {
             A lifestyle brand inspired by fashion and comfort.
           </Text>
           <Stack direction={'row'}>
-            <Button
-              bg={'pink.400'}
-              rounded={'md'}
-              color={'white'}
-              _hover={{ bg: 'pink.500' }}>
-              Shop More
-            </Button>
+            <Link href="/shop" _hover={{textDecor: "none"}}>
+              <Button bg={'pink.400'} rounded={'md'} color={'white'}
+                _hover={{ bg: 'pink.500' }}>
+                Shop More
+              </Button>
+            </Link>
             <Button
               bg={'whiteAlpha.300'}
               rounded={'md'}

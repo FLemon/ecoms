@@ -24,7 +24,7 @@ export default function LargeWithLogoCentered(props) {
           <Stack align={'flex-start'}>
             <ListHeader>Category</ListHeader>
             {props.categories.map(cat => (
-              <Link href={'#'}>{S(cat.slug).humanize().titleCase().s}</Link>
+              <Link key={cat.slug} href={'#'}>{S(cat.slug).humanize().titleCase().s}</Link>
             ))}
           </Stack>
           <Stack align={'flex-start'}>
