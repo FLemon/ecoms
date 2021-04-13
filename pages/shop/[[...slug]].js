@@ -5,7 +5,6 @@ import Layout from '@components/Layout'
 import DataClient from '@components/DataClient'
 import ProductList from '@components/ProductList'
 import ProductDetails from '@components/ProductDetails'
-import ShopFront from '@components/ShopFront'
 import Post from '@components/Post'
 import { CarouselProvider } from "pure-react-carousel"
 
@@ -37,7 +36,6 @@ export default function Shop(props) {
     if (categorySlug) {
       return <ProductList {...props} />
     }
-    return <ShopFront {...props} />
   }
 
   return (

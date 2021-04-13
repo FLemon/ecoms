@@ -3,6 +3,7 @@ import {
   PopoverTrigger, PopoverContent, useColorModeValue, useBreakpointValue,
   useDisclosure, Badge, HStack, Center
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router'
 import {
   HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon,
 } from '@chakra-ui/icons';
@@ -14,6 +15,7 @@ export default function WithSubnavigation(props) {
   const { isOpen, onToggle } = useDisclosure();
   const navItems = props.categories.map(cat => (
     {
+      slug: cat.slug,
       label: S(cat.slug).humanize().titleCase().s,
       href: `/shop/${cat.slug}`,
       children: cat.products.map(pro => (
@@ -77,6 +79,7 @@ export default function WithSubnavigation(props) {
 }
 
 const DesktopNav = ({ navItems }) => {
+  const router = useRouter()
   return (
     <Stack direction={'row'} spacing={4}>
       {navItems.map((navItem) => (
@@ -88,7 +91,8 @@ const DesktopNav = ({ navItems }) => {
                 href={navItem.href ?? '#'}
                 fontSize={'sm'}
                 fontWeight={500}
-                color={useColorModeValue('gray.600', 'gray.200')}
+                color={router.asPath.match(`/shop/${navItem.slug}/*`) ? 'pink.400' : useColorModeValue('gray.600', 'gray.200')}
+                fontWeight={router.asPath.match(`/shop/${navItem.slug}/*`) && 'bold'}
                 _hover={{
                   textDecoration: 'none',
                   color: useColorModeValue('gray.800', 'white'),
@@ -105,11 +109,11 @@ const DesktopNav = ({ navItems }) => {
                 p={4}
                 rounded={'xl'}
                 minW={'sm'}>
-                <Stack>
+                {navItem.children.length ? <Stack>
                   {navItem.children.map((child) => (
                     <DesktopSubNav key={child.label} {...child} />
                   ))}
-                </Stack>
+                </Stack> : "Coming Soon"}
               </PopoverContent>
             )}
           </Popover>
@@ -168,27 +172,30 @@ const MobileNav = ({ navItems }) => {
   );
 };
 
-const MobileNavItem = ({ label, children, href, highlight }) => {
+const MobileNavItem = ({ slug, label, children, href, highlight }) => {
   const { isOpen, onToggle } = useDisclosure();
+  const router = useRouter()
 
   return (
-    <Stack spacing={4} onClick={children && onToggle}>
+    <Stack spacing={4}>
       <Flex
         py={2}
         as={Link}
-        href={href ?? '#'}
         justify={'space-between'}
         align={'center'}
         _hover={{
           textDecoration: 'none',
         }}>
-          <Text
-            fontWeight={600}
-            color={useColorModeValue('gray.600', 'gray.200')}>
-            {label}
-          </Text>
+          <Link href={href ?? '#'} _hover={{textDecoration: 'none'}}>
+            <Text
+              fontWeight={600}
+              color={router.asPath.match(`/shop/${slug}/*`) ? 'pink.400' : useColorModeValue('gray.600', 'gray.200')}
+              fontWeight={router.asPath.match(`/shop/${slug}/*`) && 'bold'}>
+              {label}
+            </Text>
+          </Link>
         {children && (
-          <Icon
+          <Icon onClick={children && onToggle}
             as={ChevronDownIcon}
             transition={'all .25s ease-in-out'}
             transform={isOpen ? 'rotate(180deg)' : ''}
@@ -199,25 +206,24 @@ const MobileNavItem = ({ label, children, href, highlight }) => {
       </Flex>
 
       <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
-        <Stack
+        {children && children.length ? <Stack
           mt={2}
           pl={4}
           borderLeft={1}
           borderStyle={'solid'}
           borderColor={useColorModeValue('gray.200', 'gray.700')}
           align={'start'}>
-          {children &&
-            children.map((child) => (
-              <Link key={child.label} py={2} href={child.href}>
-                <HStack>
-                  <Text>{child.label}</Text>
-                  <Center>
-                    <Badge m={2} fontSize="6pt" variant="solid" colorScheme="pink">{ child.highlight && "Limited Edition" }</Badge>
-                  </Center>
-                </HStack>
-              </Link>
-            ))}
-        </Stack>
+          { children.map((child) => (
+            <Link key={child.label} py={2} href={child.href}>
+              <HStack>
+                <Text>{child.label}</Text>
+                <Center>
+                  <Badge m={2} fontSize="6pt" variant="solid" colorScheme="pink">{ child.highlight && "Limited Edition" }</Badge>
+                </Center>
+              </HStack>
+            </Link>
+          ))}
+        </Stack> : "Coming Soon"}
       </Collapse>
     </Stack>
   );
