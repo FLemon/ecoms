@@ -36,6 +36,13 @@ export default function Shop(props) {
     if (categorySlug) {
       return <ProductList {...props} />
     }
+
+    return {
+      redirect: {
+        destination: '/'
+      },
+      permanent: true
+    }
   }
 
   return (
