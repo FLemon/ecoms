@@ -9,7 +9,8 @@ export default function Banner({banner}) {
       h={{ base:'28vh', sm: '60vh' }}
       backgroundImage={`url(${banner.section[0].images[0].url})`}
       backgroundSize='100%'
-      backgroundPosition={'center center'}>
+      backgroundPosition={'center center'}
+    >
       <VStack
         w={'full'}
         justify={'center'}

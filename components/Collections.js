@@ -33,17 +33,17 @@ export default function Collections({categories}) {
     return (
       <Image
         w={{ base: "full", sm: "60%" }} rounded={'lg'}
-        objectFit={'cover'}
+        objectFit={'cover'} w="600px" h="450px"
         src={cat.images[0] ? cat.images[0].url : '/product-fallback.jpeg'}
       />
     )
   }
 
   return (
-    <VStack spacing={8}>
+    <VStack>
       { categories && categories.length > 0 && categories.map((cat, index) => (
-        <Flex mb={10} key={index} wrap="wrap" direction={index % 2 === 0 ? "row" : "row-reverse"}
-          w={{ base: "xs", sm: "md", md: "2xl"}} alignItems="center">
+        <Flex key={index} wrap="wrap" direction={index % 2 === 0 ? "row" : "row-reverse"}
+          w={{ base: "xs", sm: "md", md: "6xl"}} alignItems="center">
           <ImageBox cat={cat}/>
           <Dialog cat={cat}/>
         </Flex>
