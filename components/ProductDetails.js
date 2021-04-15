@@ -2,11 +2,11 @@ import { useContext, useState, useEffect } from 'react'
 import S from "string"
 import {
   Center, GridItem, Grid, SimpleGrid, Flex, Spacer, Box, Image, FormControl, FormLabel, Select,
-  Stat, StatNumber, Button, HStack, useNumberInput, Input, useColorModeValue, Heading, Link, Badge
+  Stat, StatNumber, Button, HStack, useNumberInput, Input, useColorModeValue, Heading, Link, Text
 } from "@chakra-ui/react"
 import { IoAddOutline as AddIcon, IoRemoveOutline as RemoveIcon } from "react-icons/io5";
 import {
-  CarouselProvider, CarouselContext, Dot, DotGroup, Slider, Slide, ButtonBack, ButtonNext, ImageWithZoom
+  CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext, ImageWithZoom
 } from "pure-react-carousel"
 import "pure-react-carousel/dist/react-carousel.es.css"
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
@@ -82,12 +82,10 @@ export default function ProductDetails(props) {
 
   const fallbackImage = "/product-fallback.jpeg"
   let sliders = []
-  let dots = []
 
   const mySlides = images.length ? images : new Array({url: fallbackImage})
   mySlides.forEach((image, index) => {
     sliders.push(<Slide key={index} index={index}><ImageWithZoom src={image.url}></ImageWithZoom></Slide>)
-    dots.push(<Dot key={index} slide={index}><Center maxW={100}><Image src={image.url} /></Center></Dot>)
   })
 
   const FormControls = ({type, value, options, onChange, limited}) => {
@@ -131,10 +129,10 @@ export default function ProductDetails(props) {
     }
 
     return (
-      <Slider style={{zIndex:-1}}>
+      <Slider>
         {mySlides.map((image, index) => (
-          <Link key={index}>
-            <Slide onClick={selectImage}>
+          <Link key={image.id} href="#">
+            <Slide index={index} onClick={selectImage}>
               <Center h="100%"><Image index={index} px="2px" src={image.url}/></Center>
             </Slide>
           </Link>
@@ -169,14 +167,14 @@ export default function ProductDetails(props) {
             <CarouselProvider h="100%" naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
               visibleSlides={4} totalSlides={mySlides.length}>
               <Box pos="relative">
+                <SubSlider />
                 <ButtonBack>
-                  <Center z-index="1" pos="absolute" top="0" h="100%" w="20px" left="0" bg="white" opacity="80%" align="middle">
+                  <Center z-index={99} pos="absolute" top="0" h="100%" w="20px" left="0" bg="white" opacity="80%" align="middle">
                     {`<`}
                   </Center>
                 </ButtonBack>
-                <SubSlider />
                 <ButtonNext>
-                  <Center z-index="1" pos="absolute" top="0" h="100%" w="20px" right="0" bg="white" opacity="80%" align="middle">
+                  <Center z-index={99} pos="absolute" top="0" h="100%" w="20px" right="0" bg="white" opacity="80%" align="middle">
                     {`>`}
                   </Center>
                 </ButtonNext>
@@ -185,31 +183,32 @@ export default function ProductDetails(props) {
           </SimpleGrid>
         </Box>
         <Box maxW='400px'>
-          <Heading>
+          <Heading mb={3}>
             {S(currentVariant.name).humanize().titleCase().s}
+            {currentVariant.limitedEdition && <Text fontSize="sm" color="pink.400" textTransform={'uppercase'}>Limited Edition</Text>}
           </Heading>
-          <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)} options={colours} limited={currentVariant.limitedEdition}/>
+          <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)}
+            options={colours} limited={currentVariant.limitedEdition}/>
           <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes.map(s => s.slug)}/>
-          <HStack spacing={4} py={2} mb={10}>
+          <HStack spacing={4} py={2} mb={2}>
             <Stat maxW={40}>
               <StatNumber textAlign="center" color="black">
                 {formatCurrencyString({value: currentVariant.price, currency: currentVariant.currency})}
               </StatNumber>
             </Stat>
             <HStack maxW="150px">
-              <Button bg="" size="2em" _hover={{ bg: useColorModeValue("red.300", "red.400") }}
+              <Button bg="" size="2em" _hover={{ bg: useColorModeValue("pink.300", "pink.400") }}
                 onClick={addOrIncreaseCartItem} disabled={currentVariant.size ? false : true} suppressHydrationWarning>
                 <AddIcon size="2em"/>
               </Button>
               <Input defaultValue={currentVariantQuantityInCart} suppressHydrationWarning/>
-              <Button bg="" size="2em" _hover={{ bg: useColorModeValue("red.300", "red.400") }}
+              <Button bg="" size="2em" _hover={{ bg: useColorModeValue("pink.300", "pink.400") }}
                 onClick={decrementIfHasItem} disabled={currentVariantQuantityInCart === 0}>
                 <RemoveIcon size="2em" />
               </Button>
             </HStack>
           </HStack>
-          <Badge m={2} variant="solid" colorScheme="red">{currentVariant.limitedEdition && "Limited Edition"}</Badge>
-          <SizeGuide posts={props.posts}/>
+          {/* <SizeGuide posts={props.posts}/> */}
         </Box>
       </SimpleGrid>
     </Center>

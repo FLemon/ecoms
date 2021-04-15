@@ -20,6 +20,7 @@ export default function WithSubnavigation(props) {
       href: `/shop/${cat.slug}`,
       children: cat.products.map(pro => (
         {
+          slug: pro.slug,
           label: S(pro.slug).humanize().titleCase().s,
           subLabel: pro.name_cn,
           href: `/shop/${cat.slug}/${pro.slug}`,
@@ -83,13 +84,10 @@ const DesktopNav = ({ navItems }) => {
   return (
     <Stack direction={'row'} spacing={4}>
       {navItems.map((navItem) => (
-        <Box key={navItem.label}>
+        <Box key={navItem.slug}>
           <Popover trigger={'hover'} placement={'bottom-start'}>
             <PopoverTrigger>
-              <Link
-                p={2}
-                href={navItem.href ?? '#'}
-                fontSize={'sm'}
+              <Link p={2} href={navItem.href ?? '#'} fontSize={'sm'}
                 fontWeight={500}
                 color={router.asPath.match(`/shop/${navItem.slug}/*`) ? 'pink.400' : useColorModeValue('gray.600', 'gray.200')}
                 fontWeight={router.asPath.match(`/shop/${navItem.slug}/*`) && 'bold'}
@@ -111,7 +109,7 @@ const DesktopNav = ({ navItems }) => {
                 minW={'sm'}>
                 {navItem.children.length ? <Stack>
                   {navItem.children.map((child) => (
-                    <DesktopSubNav key={child.label} {...child} />
+                    <DesktopSubNav key={child.slug} {...child} />
                   ))}
                 </Stack> : "Coming Soon"}
               </PopoverContent>
@@ -123,7 +121,7 @@ const DesktopNav = ({ navItems }) => {
   );
 };
 
-const DesktopSubNav = ({ label, href, subLabel, highlight }) => {
+const DesktopSubNav = ({ slug, label, href, subLabel, highlight }) => {
   return (
     <Link
       href={href}
@@ -166,7 +164,7 @@ const MobileNav = ({ navItems }) => {
       p={4}
       display={{ md: 'none' }}>
       {navItems.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
+        <MobileNavItem key={navItem.slug} {...navItem} />
       ))}
     </Stack>
   );
@@ -180,7 +178,6 @@ const MobileNavItem = ({ slug, label, children, href, highlight }) => {
     <Stack spacing={4}>
       <Flex
         py={2}
-        as={Link}
         justify={'space-between'}
         align={'center'}
         _hover={{
@@ -214,7 +211,7 @@ const MobileNavItem = ({ slug, label, children, href, highlight }) => {
           borderColor={useColorModeValue('gray.200', 'gray.700')}
           align={'start'}>
           { children.map((child) => (
-            <Link key={child.label} py={2} href={child.href}>
+            <Link key={child.slug} py={2} href={child.href}>
               <HStack>
                 <Text>{child.label}</Text>
                 <Center>

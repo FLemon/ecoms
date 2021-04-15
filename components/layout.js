@@ -5,7 +5,7 @@ import Footer from '@components/Footer'
 import { GaTracking } from '@components/GaTracking'
 import { Box } from "@chakra-ui/react"
 
-export default function Layout(props) {
+export default function Layout({categories, posts, children}) {
   return (
     <div className="container">
       <Head>
@@ -15,11 +15,11 @@ export default function Layout(props) {
       </Head>
 
       <main>
-        <Header {...props}/>
-        <Box pt="60px">{props.children}</Box>
+        <Header categories={categories}/>
+        <Box pt="60px">{children}</Box>
       </main>
 
-      <Footer {...props}/>
+      <Footer categories={categories} posts={posts}/>
     </div>
   )
 }

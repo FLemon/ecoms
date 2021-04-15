@@ -12,7 +12,10 @@ export default function SizeGuide(props) {
 
   return (
     <>
-      <Button leftIcon={<FaRulerCombined />} onClick={onOpen}>Size Guide</Button>
+      <Button leftIcon={<FaRulerCombined />} bg={"white"} color={"pink.400"}
+        onClick={onOpen}>
+        Size Guide
+      </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />

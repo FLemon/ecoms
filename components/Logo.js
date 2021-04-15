@@ -7,7 +7,7 @@ export default function Logo(props) {
       direction={'row'}
       spacing={6}>
       <Link href="/" _hover={{}}>
-        <Image src="http://rwkissy.com.au/wp-content/uploads/2020/07/kissy-logo-main.png" alt="Kissy Logo" fallbackSrc="/kissy-logo.svg" />
+        <Image src="/kissy-logo.svg" alt="Kissy Logo"/>
       </Link>
     </Center>
   )

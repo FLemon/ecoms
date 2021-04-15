@@ -47,6 +47,10 @@ export default function ProductSimple({ product }) {
             objectFit={'cover'}
             src={imageSrc}
           />
+          {product.limited_edition && <Text pos="relative" top="120px" color={'pink.500'} fontSize={'sm'} fontWeight="bold"
+            textTransform={'uppercase'} >
+            {"---limited edition---"}
+          </Text>}
         </Box>
         <Stack pt={10} align={'center'}>
           <Center h={10}>

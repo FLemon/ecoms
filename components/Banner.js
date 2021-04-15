@@ -2,14 +2,12 @@ import {
   Flex, Text, Button, VStack, useBreakpointValue, Stack, Link
 } from "@chakra-ui/react"
 
-export default function Banner(props) {
+export default function Banner({banner}) {
   return (
     <Flex
       w={'full'}
-      h={{ base:'25vh', sm: '40vh' }}
-      backgroundImage={
-        'url(https://cdn.shopify.com/s/files/1/0326/2136/3331/files/IMG_8931.jpg?v=1617286190)'
-      }
+      h={{ base:'28vh', sm: '60vh' }}
+      backgroundImage={`url(${banner.section[0].images[0].url})`}
       backgroundSize='100%'
       backgroundPosition={'center center'}>
       <VStack
@@ -23,18 +21,18 @@ export default function Banner(props) {
             fontWeight={700}
             lineHeight={1.2}
             fontSize={useBreakpointValue({ base: '3xl', md: '4xl' })}>
-            Enjoy Kissy Moment
+            {banner.section[0].header}
           </Text>
           <Text
             color={'white'}
             fontWeight={300}
             lineHeight={1}
             fontSize={useBreakpointValue({ base: 'md', md: '2xl' })}>
-            A lifestyle brand inspired by fashion and comfort.
+            {banner.section[0].content}
           </Text>
           <Stack direction={'row'}>
             <Link href="/shop" _hover={{textDecor: "none"}}>
-              <Button bg={'pink.400'} rounded={'md'} color={'white'}
+              <Button boxShadow={'0 5px 20px 0px rgb(255 122 165 / 43%)'} bg={'pink.400'} rounded={'md'} color={'white'}
                 _hover={{ bg: 'pink.500' }}>
                 Shop More
               </Button>

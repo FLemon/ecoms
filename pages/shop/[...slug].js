@@ -27,7 +27,7 @@ export default function Shop(props) {
       })
 
       return (
-        <CarouselProvider naturalSlideWidth={400} naturalSlideHeight={500} infinite={true}
+        <CarouselProvider naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
           visibleSlides={1} totalSlides={images.length || 1} hasMasterSpinner lockOnWindowScroll>
           <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />
         </CarouselProvider>
@@ -35,13 +35,6 @@ export default function Shop(props) {
     }
     if (categorySlug) {
       return <ProductList {...props} />
-    }
-
-    return {
-      redirect: {
-        destination: '/'
-      },
-      permanent: true
     }
   }
 
@@ -79,7 +72,7 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  let paths = [{ params: { slug: [] } }]
+  let paths = []
   const categories = await DataClient.getCategories()
   const posts = await DataClient.getPosts()
   await Promise.all(categories.map(async cat => {

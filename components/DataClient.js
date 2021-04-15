@@ -18,7 +18,7 @@ const getPosts = async () => {
           section {
             content
             header
-            images { url }
+            images { id, url }
             meta
           }
           is_support
@@ -81,7 +81,7 @@ const getProductVariants = async (productSlug) => {
         query GetProductVariants($productSlug: String!) {
           productVariants(where: { product: { slug: $productSlug } }) {
             slug
-            images { url }
+            images { id, url }
             colour { slug, name_cn }
             gbp_in_uk
             limited_edition

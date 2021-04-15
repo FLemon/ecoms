@@ -14,7 +14,10 @@ const ListHeader = ({ children }) => {
   );
 };
 
-export default function LargeWithLogoCentered(props) {
+export default function LargeWithLogoCentered({ posts, categories }) {
+  const supportPosts = ["delivery", "return-policy", "how-to-wash"]
+  const companyPosts = ["about-us", "join-us"]
+
   return (
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}
@@ -23,24 +26,25 @@ export default function LargeWithLogoCentered(props) {
         <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
           <Stack align={'flex-start'}>
             <ListHeader>Category</ListHeader>
-            {props.categories.map(cat => (
+            {categories.map(cat => (
               <Link key={cat.slug} href={'#'}>{S(cat.slug).humanize().titleCase().s}</Link>
             ))}
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>Company</ListHeader>
-            <Link href={'#'}>About Us</Link>
-            <Link href={'#'}>Contact Us</Link>
-            <Link href={'#'}>Join Us</Link>
+            {posts && posts.filter(post => companyPosts.includes(post.slug)).map(post => (
+              <Link key={post.slug} href={`/shop/pages/${post.slug}`}>{S(post.slug).humanize().titleCase().s}</Link>
+            ))}
           </Stack>
           <Stack align={'flex-start'}>
-            <ListHeader>Useful Links</ListHeader>
-            <Link href={'#'}>How to Wash</Link>
-            <Link href={'#'}>Return Policy</Link>
-            <Link href={'#'}>Delivery Policy</Link>
+            <ListHeader>Support</ListHeader>
+            {posts && posts.filter(post => supportPosts.includes(post.slug)).map(post => (
+              <Link key={post.slug} href={`/shop/pages/${post.slug}`}>{S(post.slug).humanize().titleCase().s}</Link>
+            ))}
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>Contact</ListHeader>
+            <Image boxSize="100px" src="/wechat.svg"/>
           </Stack>
         </SimpleGrid>
       </Container>

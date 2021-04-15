@@ -13,7 +13,8 @@ export default function Home(props) {
 export async function getStaticProps() {
   return {
     props: {
-      categories: await DataClient.getCategories()
+      categories: await DataClient.getCategories(),
+      posts: await DataClient.getPosts()
     }
   }
 }
