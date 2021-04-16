@@ -37,7 +37,7 @@ export default function WithSubnavigation(props) {
         color={useColorModeValue('gray.600', 'white')}
         minH={'60px'}
         py={{ base: 2 }}
-        px={{ base: 4 }}
+        px={{ base: 8 }}
         borderBottom={1}
         borderStyle={'solid'}
         borderColor={useColorModeValue('gray.200', 'gray.900')}
@@ -63,13 +63,7 @@ export default function WithSubnavigation(props) {
           </Flex>
         </Flex>
 
-        <Stack
-          flex={{ base: 1, md: 0 }}
-          justify={'flex-end'}
-          direction={'row'}
-          spacing={6}>
-          <Checkout />
-        </Stack>
+        <Checkout />
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>

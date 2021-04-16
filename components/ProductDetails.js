@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react"
 import { IoAddOutline as AddIcon, IoRemoveOutline as RemoveIcon } from "react-icons/io5";
 import {
-  CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext, ImageWithZoom
+  CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext
 } from "pure-react-carousel"
 import "pure-react-carousel/dist/react-carousel.es.css"
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
@@ -85,7 +85,7 @@ export default function ProductDetails(props) {
 
   const mySlides = images.length ? images : new Array({url: fallbackImage})
   mySlides.forEach((image, index) => {
-    sliders.push(<Slide key={index} index={index}><ImageWithZoom src={image.url}></ImageWithZoom></Slide>)
+    sliders.push(<Slide key={index} index={index}><Center h="100%"><Image index={index} src={image.url}/></Center></Slide>)
   })
 
   const FormControls = ({type, value, options, onChange, limited}) => {
@@ -160,7 +160,7 @@ export default function ProductDetails(props) {
     <Center>
       <SimpleGrid columns={{sm: 1, md: 2}} spacing="4" p={2}>
         <Box ml='auto' mr={0}>
-          <SimpleGrid w="350px" columns={1} spacing="4px">
+          <SimpleGrid w={{base: "350px", sm: "700px"}} columns={1} spacing="4px">
             <Box px="10px">
               <Slider>{sliders}</Slider>
             </Box>
@@ -208,7 +208,7 @@ export default function ProductDetails(props) {
               </Button>
             </HStack>
           </HStack>
-          {/* <SizeGuide posts={props.posts}/> */}
+          <SizeGuide posts={props.posts}/>
         </Box>
       </SimpleGrid>
     </Center>
