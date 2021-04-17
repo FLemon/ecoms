@@ -33,7 +33,7 @@ export default function ProductCarousel({images, colour, slideIndex}) {
 
     return (
       <>
-        <Box m={3}>
+        <Box m={3} w={{base:"full", md:"50vw", "2xl":"35vw"}}>
           <Slider>
             {slides.map((slide, index) => (
               <Slide key={index} index={index}>
@@ -44,7 +44,7 @@ export default function ProductCarousel({images, colour, slideIndex}) {
             ))}
           </Slider>
         </Box>
-        <CarouselProvider naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
+        <CarouselProvider naturalSlideWidth={300} naturalSlideHeight={350} infinite={true}
           visibleSlides={4} totalSlides={slides.length || 1}>
           <Box pos="relative">
             <Slider>
@@ -73,7 +73,7 @@ export default function ProductCarousel({images, colour, slideIndex}) {
   }
 
   return (
-    <CarouselProvider naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
+    <CarouselProvider naturalSlideWidth={600} naturalSlideHeight={600} infinite={true}
       visibleSlides={1} totalSlides={slides.length || 1}>
       <Sliders />
     </CarouselProvider>
