@@ -32,13 +32,13 @@ export default function ProductCarousel({images, colour, slideIndex}) {
     }
 
     return (
-      <Box>
-        <Box boxShadow="lg" m={3}>
+      <>
+        <Box m={3}>
           <Slider>
             {slides.map((slide, index) => (
               <Slide key={index} index={index}>
                 <Center h="100%">
-                  <Image fit="fit" index={index} src={slide.url} />
+                  <Image index={index} src={slide.url} />
                 </Center>
               </Slide>
             ))}
@@ -68,13 +68,13 @@ export default function ProductCarousel({images, colour, slideIndex}) {
             </ButtonNext>
           </Box>
         </CarouselProvider>
-      </Box>
+      </>
     )
   }
 
   return (
     <CarouselProvider naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
-      visibleSlides={1} totalSlides={slides.length || 1} hasMasterSpinner lockOnWindowScroll>
+      visibleSlides={1} totalSlides={slides.length || 1}>
       <Sliders />
     </CarouselProvider>
   )
