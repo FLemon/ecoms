@@ -1,16 +1,13 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import S from "string"
 import {
   Center, GridItem, Grid, SimpleGrid, Flex, Spacer, Box, Image, FormControl, FormLabel, Select,
   Stat, StatNumber, Button, HStack, useNumberInput, Input, useColorModeValue, Heading, Link, Text
 } from "@chakra-ui/react"
 import { IoAddOutline as AddIcon, IoRemoveOutline as RemoveIcon } from "react-icons/io5";
-import {
-  CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext
-} from "pure-react-carousel"
-import "pure-react-carousel/dist/react-carousel.es.css"
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
 import SizeGuide from '@components/SizeGuide'
+import ProductCarousel from '@components/ProductCarousel'
 
 const transformVariant = ({variant, size, product}) => {
   let result = { currency: "GBP" }
@@ -48,10 +45,8 @@ export default function ProductDetails(props) {
   }))
   const [colour, setColour] = useState(currentVariant.colour)
   const [size, setSize] = useState(currentVariant.size)
-  const carouselContext = useContext(CarouselContext)
-  let subCarouselContext
-  const [currentSlide, setCurrentSlide] = useState(carouselContext.state.currentSlide)
   const { cartCount, cartDetails, addItem, incrementItem, decrementItem } = useShoppingCart()
+  const fallbackImage = "/product-fallback.jpeg"
 
   const colours = productVariants.map(pv => ({
     colour: pv.colour.slug,
@@ -59,8 +54,6 @@ export default function ProductDetails(props) {
   }))
 
   useEffect(() => {
-    carouselContext.setStoreState({ currentSlide: slideIndex[colour] })
-
     setCurrentVariant(transformVariant({
       variant: productVariants.filter(pv => pv.colour.slug === colour)[0],
       product: product,
@@ -79,14 +72,6 @@ export default function ProductDetails(props) {
   useEffect(() => {
     setCurrentVariantQuantityInCart(cartDetails[currentVariant.id] ? cartDetails[currentVariant.id].quantity : 0)
   }, [cartCount, currentVariant])
-
-  const fallbackImage = "/product-fallback.jpeg"
-  let sliders = []
-
-  const mySlides = images.length ? images : new Array({url: fallbackImage})
-  mySlides.forEach((image, index) => {
-    sliders.push(<Slide key={index} index={index}><Center h="100%"><Image index={index} src={image.url}/></Center></Slide>)
-  })
 
   const FormControls = ({type, value, options, onChange, limited}) => {
     if (options.length === 0) {
@@ -118,29 +103,6 @@ export default function ProductDetails(props) {
     )
   }
 
-  const SubSlider = () => {
-    const subCarouselContext = useContext(CarouselContext)
-    useEffect(() => {
-      subCarouselContext.setStoreState({ currentSlide: slideIndex[colour] })
-    }, [colour])
-
-    const selectImage = (e) => {
-      carouselContext.setStoreState({ currentSlide: e.target.getAttribute("index") })
-    }
-
-    return (
-      <Slider>
-        {mySlides.map((image, index) => (
-          <Link key={image.id} href="#">
-            <Slide index={index} onClick={selectImage}>
-              <Center h="100%"><Image index={index} px="2px" src={image.url}/></Center>
-            </Slide>
-          </Link>
-        ))}
-      </Slider>
-    )
-  }
-
   const addOrIncreaseCartItem = (e) => {
     if (!currentVariant.size) { return }
     if (currentVariantQuantityInCart > 0) {
@@ -157,32 +119,10 @@ export default function ProductDetails(props) {
   }
 
   return (
-    <Center>
-      <SimpleGrid columns={{sm: 1, md: 2}} spacing="4" p={2}>
-        <Box ml='auto' mr={0}>
-          <SimpleGrid w={{base: "350px", sm: "700px"}} columns={1} spacing="4px">
-            <Box px="10px">
-              <Slider>{sliders}</Slider>
-            </Box>
-            <CarouselProvider h="100%" naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
-              visibleSlides={4} totalSlides={mySlides.length}>
-              <Box pos="relative">
-                <SubSlider />
-                <ButtonBack>
-                  <Center z-index={99} pos="absolute" top="0" h="100%" w="20px" left="0" bg="white" opacity="80%" align="middle">
-                    {`<`}
-                  </Center>
-                </ButtonBack>
-                <ButtonNext>
-                  <Center z-index={99} pos="absolute" top="0" h="100%" w="20px" right="0" bg="white" opacity="80%" align="middle">
-                    {`>`}
-                  </Center>
-                </ButtonNext>
-              </Box>
-            </CarouselProvider>
-          </SimpleGrid>
-        </Box>
-        <Box maxW='400px'>
+    <Center p={5}>
+      <SimpleGrid w={{base:"full", md:"60%"}} columns={{sm: 1, md: 2}} spacing="4">
+        <ProductCarousel images={images} slideIndex={slideIndex} />
+        <Box>
           <Heading mb={3}>
             {S(currentVariant.name).humanize().titleCase().s}
             {currentVariant.limitedEdition && <Text fontSize="sm" color="pink.400" textTransform={'uppercase'}>Limited Edition</Text>}

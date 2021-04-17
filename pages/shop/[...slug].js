@@ -6,7 +6,6 @@ import DataClient from '@components/DataClient'
 import ProductList from '@components/ProductList'
 import ProductDetails from '@components/ProductDetails'
 import Post from '@components/Post'
-import { CarouselProvider } from "pure-react-carousel"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
@@ -26,12 +25,7 @@ export default function Shop(props) {
         images.push(...pv.images)
       })
 
-      return (
-        <CarouselProvider naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
-          visibleSlides={1} totalSlides={images.length || 1} hasMasterSpinner lockOnWindowScroll>
-          <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />
-        </CarouselProvider>
-      )
+      return <ProductDetails product={product} slideIndex={slideIndex} images={images} {...props} />
     }
     if (categorySlug) {
       return <ProductList {...props} />
