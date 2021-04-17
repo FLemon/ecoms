@@ -16,7 +16,7 @@ const ListHeader = ({ children }) => {
 
 export default function LargeWithLogoCentered({ posts, categories }) {
   const supportPosts = ["delivery", "return-policy", "how-to-wash"]
-  const companyPosts = ["about-us", "join-us"]
+  const companyPosts = ["about-us", "join-us", "product-details"]
 
   return (
     <Box
