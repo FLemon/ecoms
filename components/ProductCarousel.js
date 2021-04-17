@@ -33,15 +33,17 @@ export default function ProductCarousel({images, colour, slideIndex}) {
 
     return (
       <Box>
-        <Slider>
-          {slides.map((slide, index) => (
-            <Slide key={index} index={index}>
-              <Center h="100%">
-                <Image fit="fit" index={index} src={slide.url} />
-              </Center>
-            </Slide>
-          ))}
-        </Slider>
+        <Box boxShadow="lg" m={3}>
+          <Slider>
+            {slides.map((slide, index) => (
+              <Slide key={index} index={index}>
+                <Center h="100%">
+                  <Image fit="fit" index={index} src={slide.url} />
+                </Center>
+              </Slide>
+            ))}
+          </Slider>
+        </Box>
         <CarouselProvider naturalSlideWidth={400} naturalSlideHeight={450} infinite={true}
           visibleSlides={4} totalSlides={slides.length || 1}>
           <Box pos="relative">

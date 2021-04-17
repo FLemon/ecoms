@@ -119,8 +119,8 @@ export default function ProductDetails(props) {
   }
 
   return (
-    <Center p={5}>
-      <SimpleGrid w={{base:"full", md:"60%"}} columns={{sm: 1, md: 2}} spacing="4">
+    <Center p={2}>
+      <SimpleGrid w={{base:"full", md:"60%"}} columns={{sm: 1, md: 2}} spacing="2">
         <ProductCarousel images={images} slideIndex={slideIndex} />
         <Box>
           <Heading mb={3}>
