@@ -6,7 +6,7 @@ export default function Banner({banner}) {
   return (
     <Flex
       w={'full'}
-      h={{ base:'28vh', sm: '60vh' }}
+      h={{ base:'28vh', sm: '80vh' }}
       backgroundImage={`url(${banner.section[0].images[0].url})`}
       backgroundSize='100%'
       backgroundPosition={'center center'}
@@ -32,19 +32,21 @@ export default function Banner({banner}) {
             {banner.section[0].content}
           </Text>
           <Stack direction={'row'}>
-            <Link href="/shop" _hover={{textDecor: "none"}}>
+            <Link href="/shop/bras" _hover={{textDecor: "none"}}>
               <Button boxShadow={'0 5px 20px 0px rgb(255 122 165 / 43%)'} bg={'pink.400'} rounded={'md'} color={'white'}
                 _hover={{ bg: 'pink.500' }}>
                 Shop More
               </Button>
             </Link>
-            <Button
-              bg={'whiteAlpha.300'}
-              rounded={'md'}
-              color={'white'}
-              _hover={{ bg: 'whiteAlpha.500' }}>
-              About The Brand
-            </Button>
+            <Link href="/shop/pages/about-us" _hover={{textDecor: "none"}}>
+              <Button
+                bg={'whiteAlpha.300'}
+                rounded={'md'}
+                color={'white'}
+                _hover={{ bg: 'whiteAlpha.500' }}>
+                About The Brand
+              </Button>
+            </Link>
           </Stack>
         </Stack>
       </VStack>

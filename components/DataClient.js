@@ -34,13 +34,13 @@ const getCategories = async () => {
     query: gql`
       query {
         categories(sort: "order:asc") {
-          name_cn
+          name
           slug
           description
           images(limit:1) { url }
-          products(sort: "limited_edition:asc") {
+          products(sort: "limited_edition:desc") {
             slug
-            name_cn
+            name
             limited_edition
           }
         }
@@ -59,11 +59,12 @@ const getCategoryProducts = async (categorySlug) => {
       query GetProducts($categorySlug: String!) {
         products(
           where: { category: { slug: $categorySlug }},
-          sort: "limited_edition:asc"
+          sort: "limited_edition:desc"
         ) {
             slug
-            name_cn
-            gbp_in_uk
+            name
+            currency
+            price
             images(limit:1) { url }
             limited_edition
           }
@@ -82,8 +83,9 @@ const getProductVariants = async (productSlug) => {
           productVariants(where: { product: { slug: $productSlug } }) {
             slug
             images { id, url }
-            colour { slug, name_cn }
-            gbp_in_uk
+            colour { slug, name }
+            currency
+            price
             limited_edition
             sizes { slug, quantity }
           }
@@ -101,11 +103,12 @@ const getInventories = async () => {
     query: gql`
       query {
         productVariants {
-          product { gbp_in_uk, slug }
+          product { currency, price, slug }
           slug
           images(limit:1) { url }
-          colour { slug, name_cn }
-          gbp_in_uk
+          colour { slug, name }
+          currency
+          price
           limited_edition
           sizes { slug, quantity }
         }
@@ -118,10 +121,10 @@ const getInventories = async () => {
     const allSizeVariants = pv.sizes.filter(s => s.quantity > 0).map(size => ({
       name: S(pv.product.slug).humanize().titleCase().s,
       sku: `${pv.slug}-${size.slug}`,
-      price: (pv.gbp_in_uk || pv.product.gbp_in_uk)*100,
+      price: (pv.price || pv.product.price)*100,
       image: pv.images[0] && pv.images[0].url,
       description: `colour: ${pv.colour.slug}, size: ${size.slug}`,
-      currency: "GBP"
+      currency: pv.product.currency.toUpperCase()
     }))
     inventories.push(...allSizeVariants)
   })

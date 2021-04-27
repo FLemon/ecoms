@@ -27,7 +27,7 @@ export default function LargeWithLogoCentered({ posts, categories }) {
           <Stack align={'flex-start'}>
             <ListHeader>Category</ListHeader>
             {categories.map(cat => (
-              <Link key={cat.slug} href={'#'}>{S(cat.slug).humanize().titleCase().s}</Link>
+              <Link key={cat.slug} href={`/shop/${cat.slug}`}>{S(cat.slug).humanize().titleCase().s}</Link>
             ))}
           </Stack>
           <Stack align={'flex-start'}>

@@ -53,7 +53,7 @@ export default function Checkout(props) {
               </Heading>
               <HStack>
                 <Text fontSize="xs">Colour:</Text>
-                <Text fontSize="xs" align="left">{S(item.colour).humanize().titleCase().s}</Text>
+                <Text fontSize="xs" align="left">{S(item.color).humanize().titleCase().s}</Text>
               </HStack>
               <HStack>
                 <Text fontSize="xs">Size:</Text>

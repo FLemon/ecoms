@@ -1,23 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import {
-  Box, FormControl, FormLabel, Select,
+  Box, Select,
   Stat, StatNumber, Button, HStack, Input, useColorModeValue, Heading, Text
 } from "@chakra-ui/react"
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
 import { IoAddOutline as AddIcon, IoRemoveOutline as RemoveIcon } from "react-icons/io5";
+import { CarouselContext } from "pure-react-carousel"
 import S from "string"
 import SizeGuide from '@components/SizeGuide'
+import RadioSelect from '@components/RadioSelect'
 
 const transformVariant = ({variant, size, product}) => {
-  let result = { currency: "GBP" }
+  let result = { currency: product.currency.toUpperCase() }
   if (variant) {
-    const variantPrice = variant.gbp_in_uk || product.gbp_in_uk
+    const variantPrice = variant.price || product.price
     const variantSize = size || variant.sizes[0] && variant.sizes[0].slug
     result = {
       name: product.slug,
       id: variantSize && `${variant.slug}-${variantSize}`,
-      colour: variant.colour.slug,
-      size: variant.sizes[0] && variant.sizes[0].slug,
+      color: variant.colour.slug,
+      size: variantSize,
       sizes: variant.sizes.filter(s => s.quantity > 0),
       price: variantPrice*100,
       image: variant.images[0] && variant.images[0].url,
@@ -28,71 +30,31 @@ const transformVariant = ({variant, size, product}) => {
   return result
 }
 
-export default function ProductVariantsForm({productVariants, product, sizeGuide}) {
+export default function ProductVariantsForm({productVariants, product, slideIndex, sizeGuide}) {
   const [currentVariantQuantityInCart, setCurrentVariantQuantityInCart] = useState(0)
   const [currentVariant, setCurrentVariant] = useState(transformVariant({
     variant: productVariants[0],
     product: product
   }))
-  const [colour, setColour] = useState(currentVariant.colour)
+  const [color, setColor] = useState(currentVariant.color)
   const [size, setSize] = useState(currentVariant.size)
   const { cartCount, cartDetails, addItem, incrementItem, decrementItem } = useShoppingCart()
   const fallbackImage = "/product-fallback.jpeg"
-
-  const colours = productVariants.map(pv => ({
-    colour: pv.colour.slug,
-    limited: pv.limited_edition
-  }))
+  const carouselContext = useContext(CarouselContext)
 
   useEffect(() => {
+    carouselContext.setStoreState({ currentSlide: slideIndex[color] })
+
     setCurrentVariant(transformVariant({
-      variant: productVariants.filter(pv => pv.colour.slug === colour)[0],
+      variant: productVariants.filter(pv => pv.colour.slug === color)[0],
       product: product,
       size
     }))
-  }, [colour])
-
-  useEffect(() => {
-    setCurrentVariant(transformVariant({
-      variant: productVariants.filter(pv => pv.colour.slug === colour)[0],
-      product: product,
-      size
-    }))
-  }, [size])
+  }, [size, color])
 
   useEffect(() => {
     setCurrentVariantQuantityInCart(cartDetails[currentVariant.id] ? cartDetails[currentVariant.id].quantity : 0)
   }, [cartCount, currentVariant])
-
-  const FormControls = ({type, value, options, onChange, limited}) => {
-    if (options.length === 0) {
-      return (
-        <Box>no stock</Box>
-      )
-    }
-    const ColourOptions = () => {
-      return options.map(option => (
-        <option key={option.colour} value={option.colour}>
-          {S(option.colour).humanize().titleCase().s} {option.limited ? "(Limited Edition)" : ""}
-        </option>
-      ))
-    }
-
-    const SizeOptions = () => {
-      return options.map(v => (
-        <option key={v} value={v}>{v.replace("-", "/").toUpperCase()}</option>
-      ))
-    }
-
-    return (
-      <FormControl py={2} isRequired id={type}>
-        <FormLabel>{S(type).humanize().titleCase().s}</FormLabel>
-        <Select onChange={onChange} value={value}>
-          {type === "colour" ? <ColourOptions /> : <SizeOptions />}
-        </Select>
-      </FormControl>
-    )
-  }
 
   const addOrIncreaseCartItem = (e) => {
     if (!currentVariant.size) { return }
@@ -109,15 +71,24 @@ export default function ProductVariantsForm({productVariants, product, sizeGuide
     }
   }
 
+  const colors = productVariants.map(pv => ({
+    slug: pv.colour.slug,
+    name: pv.colour.slug,
+    limited: pv.limited_edition
+  }))
+
   return (
     <Box>
       <Heading mb={3}>
         {S(currentVariant.name).humanize().titleCase().s}
         {currentVariant.limitedEdition && <Text fontSize="sm" color="pink.400" textTransform={'uppercase'}>Limited Edition</Text>}
       </Heading>
-      <FormControls type="colour" value={colour} onChange={e => setColour(e.target.value)}
-        options={colours} limited={currentVariant.limitedEdition}/>
-      <FormControls type="size" value={size} onChange={e => setSize(e.target.value)} options={currentVariant.sizes.map(s => s.slug)}/>
+      <RadioSelect type="color" options={colors} currentValue={color}
+        onChange={val => setColor(val)}
+      />
+      <RadioSelect type="size" options={currentVariant.sizes} currentValue={size}
+        onChange={val => setSize(val)}
+      />
       <HStack spacing={4} py={2} mb={2}>
         <Stat maxW={40}>
           <StatNumber textAlign="center" color="black">

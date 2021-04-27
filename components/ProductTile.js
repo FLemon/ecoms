@@ -60,7 +60,7 @@ export default function ProductSimple({ product }) {
           </Center>
           <Stack direction={'row'} align={'center'}>
             <Text fontWeight={800} fontSize={'xl'}>
-              {formatCurrencyString({value: product.gbp_in_uk * 100, currency: "GBP"})}
+              {formatCurrencyString({value: product.price * 100, currency: product.currency.toUpperCase()})}
             </Text>
           </Stack>
         </Stack>
