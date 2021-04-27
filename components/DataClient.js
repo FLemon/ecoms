@@ -83,7 +83,7 @@ const getProductVariants = async (productSlug) => {
           productVariants(where: { product: { slug: $productSlug } }) {
             slug
             images { id, url }
-            colour { slug, name }
+            colour { slug, name, hex }
             currency
             price
             limited_edition

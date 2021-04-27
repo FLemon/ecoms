@@ -56,7 +56,7 @@ const ColorRadio = (props) => {
       <Box
         {...checkbox}
         cursor="pointer" borderWidth="1px" borderRadius="md" boxShadow="md"
-        _checked={{ borderColor: color.slug, borderWidth:"2px" }} bgColor={color.slug}
+        _checked={{ borderColor: color.hex, borderWidth:"2px" }} bgColor={color.hex}
         _focus={{ boxShadow: "outline" }} boxSize="40px"/>
     </Box>
   )

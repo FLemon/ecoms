@@ -5,9 +5,10 @@ import {
 import S from "string"
 import { FaRulerCombined } from "react-icons/fa";
 
-export default function SizeGuide({sizeGuide}) {
+export default function SizeGuide({posts}) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const title = S(`kissy如吻 size guides`).humanize().titleCase().s
+  const content = posts.find(p => p.slug === "size-guide")
 
   return (
     <>
@@ -22,7 +23,7 @@ export default function SizeGuide({sizeGuide}) {
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody maxH="800px" overflowY="scroll">
-            {sizeGuide && sizeGuide.section.map((sec, pid) => {
+            {content && content.section.map((sec, pid) => {
               return (
                 <Center mb={10} key={pid}>
                   <Flex

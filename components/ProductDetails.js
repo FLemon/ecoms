@@ -9,7 +9,6 @@ import "pure-react-carousel/dist/react-carousel.es.css"
 
 export default function ProductDetails(props) {
   const { slideIndex, images, product, productVariants, posts } = props
-  const sizeGuide = posts.find(p => p.slug === "size-guide")
   const slides = images.length ? images : new Array({url: fallbackImage})
 
   if (productVariants.length === 0) {
@@ -26,8 +25,7 @@ export default function ProductDetails(props) {
       <Center p={2}>
         <SimpleGrid w={{base: "full", lg: "60%"}} columns={{sm: 1, md: 2}} spacing="2">
           <ProductCarousel slides={slides} slideIndex={slideIndex} />
-          <ProductVariantsForm productVariants={productVariants} product={product}
-            slideIndex={slideIndex} sizeGuide={sizeGuide}/>
+          <ProductVariantsForm productVariants={productVariants} product={product} posts={posts} slideIndex={slideIndex}/>
         </SimpleGrid>
       </Center>
     </CarouselProvider>

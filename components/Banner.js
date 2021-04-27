@@ -1,13 +1,16 @@
 import {
   Flex, Text, Button, VStack, useBreakpointValue, Stack, Link
 } from "@chakra-ui/react"
+import S from "string"
 
 export default function Banner({banner}) {
+  console.log(banner)
+  const section = banner.section[0]
   return (
     <Flex
       w={'full'}
-      h={{ base:'28vh', sm: '80vh' }}
-      backgroundImage={`url(${banner.section[0].images[0].url})`}
+      h={{ base:'28vh', sm: '70vh' }}
+      backgroundImage={`url(${section.images[0].url})`}
       backgroundSize='100%'
       backgroundPosition={'center center'}
     >
@@ -22,20 +25,20 @@ export default function Banner({banner}) {
             fontWeight={700}
             lineHeight={1.2}
             fontSize={useBreakpointValue({ base: '3xl', md: '4xl' })}>
-            {banner.section[0].header}
+            {section.header}
           </Text>
           <Text
             color={'white'}
             fontWeight={300}
             lineHeight={1}
             fontSize={useBreakpointValue({ base: 'md', md: '2xl' })}>
-            {banner.section[0].content}
+            {section.content}
           </Text>
           <Stack direction={'row'}>
-            <Link href="/shop/bras" _hover={{textDecor: "none"}}>
+            <Link href={`/shop/bras/${section.meta.slug}`} _hover={{textDecor: "none"}}>
               <Button boxShadow={'0 5px 20px 0px rgb(255 122 165 / 43%)'} bg={'pink.400'} rounded={'md'} color={'white'}
                 _hover={{ bg: 'pink.500' }}>
-                Shop More
+              {S(section.meta.text).humanize().titleCase().s}
               </Button>
             </Link>
             <Link href="/shop/pages/about-us" _hover={{textDecor: "none"}}>

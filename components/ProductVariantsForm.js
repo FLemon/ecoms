@@ -14,7 +14,7 @@ const transformVariant = ({variant, size, product}) => {
   let result = { currency: product.currency.toUpperCase() }
   if (variant) {
     const variantPrice = variant.price || product.price
-    const variantSize = size || variant.sizes[0] && variant.sizes[0].slug
+    const variantSize = variant.sizes.includes(size) && size || variant.sizes[0] && variant.sizes[0].slug
     result = {
       name: product.slug,
       id: variantSize && `${variant.slug}-${variantSize}`,
@@ -30,7 +30,7 @@ const transformVariant = ({variant, size, product}) => {
   return result
 }
 
-export default function ProductVariantsForm({productVariants, product, slideIndex, sizeGuide}) {
+export default function ProductVariantsForm({productVariants, product, slideIndex, posts}) {
   const [currentVariantQuantityInCart, setCurrentVariantQuantityInCart] = useState(0)
   const [currentVariant, setCurrentVariant] = useState(transformVariant({
     variant: productVariants[0],
@@ -50,7 +50,15 @@ export default function ProductVariantsForm({productVariants, product, slideInde
       product: product,
       size
     }))
-  }, [size, color])
+  }, [color])
+
+  useEffect(() => {
+    setCurrentVariant(transformVariant({
+      variant: productVariants.filter(pv => pv.colour.slug === color)[0],
+      product: product,
+      size
+    }))
+  }, [size])
 
   useEffect(() => {
     setCurrentVariantQuantityInCart(cartDetails[currentVariant.id] ? cartDetails[currentVariant.id].quantity : 0)
@@ -73,7 +81,8 @@ export default function ProductVariantsForm({productVariants, product, slideInde
 
   const colors = productVariants.map(pv => ({
     slug: pv.colour.slug,
-    name: pv.colour.slug,
+    name: pv.colour.name,
+    hex: pv.colour.hex,
     limited: pv.limited_edition
   }))
 
@@ -107,7 +116,7 @@ export default function ProductVariantsForm({productVariants, product, slideInde
           </Button>
         </HStack>
       </HStack>
-      <SizeGuide sizeGuide={sizeGuide}/>
+      <SizeGuide posts={posts}/>
     </Box>
   )
 }
