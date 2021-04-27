@@ -94,7 +94,10 @@ export default function RadioSelect({ type, options, currentValue, onChange }) {
 
   return (
     <>
-    {S(type).humanize().titleCase().s}: {S(currentValue).humanize().titleCase().s}
+    <HStack>
+      <Text>{S(type).humanize().titleCase().s}:</Text>
+      <Text fontWeight="bold">{S(currentValue).humanize().titleCase().s}</Text>
+    </HStack>
     <HStack p={1} {...group}>
       {options.map(option => {
         const value = option.slug
