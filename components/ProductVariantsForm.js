@@ -98,18 +98,20 @@ export default function ProductVariantsForm({productVariants, product, slideInde
       <RadioSelect type="size" options={currentVariant.sizes} currentValue={size}
         onChange={val => setSize(val)}
       />
-      <HStack spacing={4} py={2} mb={2}>
-        <Stat maxW={40}>
-          <StatNumber textAlign="center" color="black">
-            {formatCurrencyString({value: currentVariant.price, currency: currentVariant.currency})}
-          </StatNumber>
-        </Stat>
+      <HStack p={2} mb={2}>
+        <Box pr={10}>
+          <Stat>
+            <StatNumber color="black">
+              {formatCurrencyString({value: currentVariant.price, currency: currentVariant.currency})}
+            </StatNumber>
+          </Stat>
+        </Box>
         <HStack maxW="150px">
           <Button bg="" size="2em" _hover={{ bg: useColorModeValue("pink.300", "pink.400") }}
             onClick={addOrIncreaseCartItem} disabled={currentVariant.size ? false : true} suppressHydrationWarning>
             <AddIcon size="2em"/>
           </Button>
-          <Input defaultValue={currentVariantQuantityInCart} suppressHydrationWarning/>
+          <Input defaultValue={currentVariantQuantityInCart} suppressHydrationWarning disabled/>
           <Button bg="" size="2em" _hover={{ bg: useColorModeValue("pink.300", "pink.400") }}
             onClick={decrementIfHasItem} disabled={currentVariantQuantityInCart === 0}>
             <RemoveIcon size="2em" />

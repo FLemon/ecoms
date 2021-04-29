@@ -5,7 +5,6 @@ import {
 import ProductCarousel from '@components/ProductCarousel'
 import ProductVariantsForm from '@components/ProductVariantsForm'
 import { CarouselProvider } from "pure-react-carousel"
-import "pure-react-carousel/dist/react-carousel.es.css"
 
 export default function ProductDetails(props) {
   const { slideIndex, images, product, productVariants, posts } = props
@@ -20,7 +19,7 @@ export default function ProductDetails(props) {
   }
 
   return (
-    <CarouselProvider naturalSlideWidth={600} naturalSlideHeight={600} infinite={true}
+    <CarouselProvider naturalSlideWidth={100} naturalSlideHeight={100} infinite={true}
       visibleSlides={1} totalSlides={slides.length || 1}>
       <Center p={2}>
         <SimpleGrid w={{base: "full", lg: "60%"}} columns={{sm: 1, md: 2}} spacing="2">

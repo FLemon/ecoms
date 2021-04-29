@@ -4,7 +4,6 @@ import {
 import S from "string"
 
 export default function Banner({banner}) {
-  console.log(banner)
   const section = banner.section[0]
   return (
     <Flex

@@ -1,48 +1,9 @@
 import {
   Box, FormControl, FormLabel, Select, useRadioGroup, useRadio, Center,
-  Stack, HStack, Input, useColorModeValue, Heading, Text, RadioGroup
+  Stack, HStack, Input, useColorModeValue, Heading, Text, RadioGroup,
+  Tooltip
 } from "@chakra-ui/react"
 import S from "string"
-
-const RadioCard = (props) => {
-  const { boxType, obj } = props
-  const { getInputProps, getCheckboxProps } = useRadio(props)
-
-  const input = getInputProps()
-  const checkbox = getCheckboxProps()
-
-  const ColorBox = (props) => {
-    const { boxValue, checkbox } = props
-    return (
-      <Box
-        {...checkbox}
-        cursor="pointer" borderWidth="1px" borderRadius="md" boxShadow="md"
-        _checked={{ borderColor: boxValue, borderWidth:"2px" }} bgColor={boxValue}
-        _focus={{ boxShadow: "outline" }} boxSize="40px"/>
-    )
-  }
-
-  const SizeBox = (props) => {
-    const { boxValue, checkbox } = props
-    return (
-      <Center
-        {...checkbox}
-        cursor="pointer" borderWidth="1px" borderRadius="md" boxShadow="md"
-        _checked={{ bg: "teal.600", color: "white", borderColor: "teal.600" }}
-        _focus={{ boxShadow: "outline" }} boxSize="40px"
-      >
-        {boxValue}
-      </Center>
-    )
-  }
-
-  return (
-    <Box as="label">
-      <input {...input} />
-      {boxType === "color" ? <ColorBox boxValue={obj.slug} checkbox={checkbox} /> : <SizeBox boxValue={obj} checkbox={checkbox} />}
-    </Box>
-  )
-}
 
 const ColorRadio = (props) => {
   const { getInputProps, getCheckboxProps } = useRadio(props)
@@ -53,11 +14,13 @@ const ColorRadio = (props) => {
   return (
     <Box as="label">
       <input {...input} />
-      <Box
-        {...checkbox}
-        cursor="pointer" borderWidth="1px" borderRadius="md" boxShadow="md"
-        _checked={{ borderColor: color.hex, borderWidth:"2px" }} bgColor={color.hex}
-        _focus={{ boxShadow: "outline" }} boxSize="40px"/>
+      <Tooltip label={S(color.name).humanize().titleCase().s} fontSize="md">
+        <Box
+          {...checkbox}
+          cursor="pointer" borderWidth="1px" borderRadius="md" boxShadow="md"
+          _checked={{ borderColor: color.hex, borderWidth:"2px" }} bgColor={color.hex}
+          _focus={{ boxShadow: "outline" }} boxSize="40px"/>
+      </Tooltip>
     </Box>
   )
 }
@@ -77,7 +40,7 @@ const SizeRadio = (props) => {
         _checked={{ bg: "teal.600", color: "white", borderColor: "teal.600" }}
         _focus={{ boxShadow: "outline" }} boxSize="40px"
       >
-        {size.slug}
+        {S(size.slug).humanize().s.toUpperCase()}
       </Center>
     </Box>
   )
@@ -96,7 +59,7 @@ export default function RadioSelect({ type, options, currentValue, onChange }) {
     <>
     <HStack>
       <Text>{S(type).humanize().titleCase().s}:</Text>
-      <Text fontWeight="bold">{S(currentValue).humanize().titleCase().s}</Text>
+      <Text fontWeight="bold">{S(currentValue).humanize().s.toUpperCase()}</Text>
     </HStack>
     <HStack p={1} {...group}>
       {options.map(option => {
