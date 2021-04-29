@@ -101,7 +101,7 @@ export default function ProductVariantsForm({productVariants, product, slideInde
       <HStack p={2} mb={2}>
         <Box pr={10}>
           <Stat>
-            <StatNumber color="black">
+            <StatNumber fontFamily="Arial, Helvetica, sans-serif" color="black">
               {formatCurrencyString({value: currentVariant.price, currency: currentVariant.currency})}
             </StatNumber>
           </Stat>

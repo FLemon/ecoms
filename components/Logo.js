@@ -7,7 +7,7 @@ export default function Logo(props) {
       direction={'row'}
       spacing={6}>
       <Link href="/" _hover={{}}>
-        <Image src="/kissy-logo.svg" alt="Kissy Logo"/>
+        <Image src="/kissy-logo.svg" alt=""/>
       </Link>
     </Center>
   )

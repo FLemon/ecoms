@@ -59,7 +59,7 @@ export default function ProductSimple({ product }) {
             </Heading>
           </Center>
           <Stack direction={'row'} align={'center'}>
-            <Text fontWeight={800} fontSize={'xl'}>
+            <Text fontFamily="Arial, Helvetica, sans-serif" fontWeight={800} fontSize={'xl'}>
               {formatCurrencyString({value: product.price * 100, currency: product.currency.toUpperCase()})}
             </Text>
           </Stack>
