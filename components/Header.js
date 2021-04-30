@@ -55,9 +55,8 @@ export default function WithSubnavigation(props) {
             aria-label={'Toggle Navigation'}
           />
         </Flex>
+        <Logo/>
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-          <Logo/>
-
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
             <DesktopNav navItems={navItems}/>
           </Flex>

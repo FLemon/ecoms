@@ -111,7 +111,7 @@ export default function ProductVariantsForm({productVariants, product, slideInde
             onClick={addOrIncreaseCartItem} disabled={currentVariant.size ? false : true} suppressHydrationWarning>
             <AddIcon size="2em"/>
           </Button>
-          <Input defaultValue={currentVariantQuantityInCart} suppressHydrationWarning disabled/>
+          <Input minW="40px" defaultValue={currentVariantQuantityInCart} suppressHydrationWarning disabled/>
           <Button bg="" size="2em" _hover={{ bg: useColorModeValue("pink.300", "pink.400") }}
             onClick={decrementIfHasItem} disabled={currentVariantQuantityInCart === 0}>
             <RemoveIcon size="2em" />

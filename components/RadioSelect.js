@@ -38,7 +38,7 @@ const SizeRadio = (props) => {
         {...checkbox}
         cursor="pointer" borderWidth="1px" borderRadius="md" boxShadow="md"
         _checked={{ bg: "teal.600", color: "white", borderColor: "teal.600" }}
-        _focus={{ boxShadow: "outline" }} boxSize="40px"
+        _focus={{ boxShadow: "outline" }} p={2} minW="40px"
       >
         {S(size.slug).humanize().s.toUpperCase()}
       </Center>

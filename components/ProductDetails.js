@@ -21,7 +21,7 @@ export default function ProductDetails(props) {
   return (
     <CarouselProvider naturalSlideWidth={100} naturalSlideHeight={100} infinite={true}
       visibleSlides={1} totalSlides={slides.length || 1}>
-      <Center p={2}>
+      <Center p={10}>
         <SimpleGrid w={{base: "full", lg: "60%"}} columns={{sm: 1, md: 2}} spacing="2">
           <ProductCarousel slides={slides} slideIndex={slideIndex} />
           <ProductVariantsForm productVariants={productVariants} product={product} posts={posts} slideIndex={slideIndex}/>
