@@ -1,7 +1,6 @@
 import {
   Box, FormControl, FormLabel, Select, useRadioGroup, useRadio, Center,
   Stack, HStack, Input, useColorModeValue, Heading, Text, RadioGroup,
-  Tooltip
 } from "@chakra-ui/react"
 import S from "string"
 
@@ -14,13 +13,11 @@ const ColorRadio = (props) => {
   return (
     <Box as="label">
       <input {...input} />
-      <Tooltip label={S(color.name).humanize().titleCase().s} fontSize="md">
-        <Box
-          {...checkbox}
-          cursor="pointer" borderWidth="1px" borderRadius="md" boxShadow="md"
-          _checked={{ borderColor: color.hex, borderWidth:"2px" }} bgColor={color.hex}
-          _focus={{ boxShadow: "outline" }} boxSize="40px"/>
-      </Tooltip>
+      <Box
+        {...checkbox}
+        cursor="pointer" borderWidth="1px" borderRadius="md" boxShadow="md"
+        _checked={{ borderColor: color.hex, borderWidth:"2px" }} bgColor={color.hex}
+        _focus={{ boxShadow: "outline" }} boxSize="40px"/>
     </Box>
   )
 }

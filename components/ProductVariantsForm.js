@@ -14,7 +14,7 @@ const transformVariant = ({variant, size, product}) => {
   let result = { currency: product.currency.toUpperCase() }
   if (variant) {
     const variantPrice = variant.price || product.price
-    const variantSize = variant.sizes.includes(size) && size || variant.sizes[0] && variant.sizes[0].slug
+    const variantSize = size || (variant.sizes[0] && variant.sizes[0].slug)
     result = {
       name: product.slug,
       id: variantSize && `${variant.slug}-${variantSize}`,
@@ -42,22 +42,22 @@ export default function ProductVariantsForm({productVariants, product, slideInde
   const fallbackImage = "/product-fallback.jpeg"
   const carouselContext = useContext(CarouselContext)
 
+  const getNewVariant = () => (
+    transformVariant({
+      variant: productVariants.filter(pv => pv.colour.slug === color)[0],
+      product: product,
+      size
+    })
+  )
+
   useEffect(() => {
     carouselContext.setStoreState({ currentSlide: slideIndex[color] })
 
-    setCurrentVariant(transformVariant({
-      variant: productVariants.filter(pv => pv.colour.slug === color)[0],
-      product: product,
-      size
-    }))
+    setCurrentVariant(getNewVariant())
   }, [color])
 
   useEffect(() => {
-    setCurrentVariant(transformVariant({
-      variant: productVariants.filter(pv => pv.colour.slug === color)[0],
-      product: product,
-      size
-    }))
+    setCurrentVariant(getNewVariant())
   }, [size])
 
   useEffect(() => {
