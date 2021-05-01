@@ -2,12 +2,9 @@ import { Center, Image, HStack, Link, useColorModeValue } from "@chakra-ui/react
 
 export default function Logo(props) {
   return (
-    <Center w={{base: "50vw", sm: "10vw", md: "15vw"}}
-      justify={'flex-end'}
-      direction={'row'}
-      spacing={6}>
+    <Center w={{base: "50vw", sm: "10vw", md: "15vw"}}>
       <Link href="/" _hover={{}}>
-        <Image src="/kissy-logo.svg" alt=""/>
+        <Image src="/kissy-logo.svg"/>
       </Link>
     </Center>
   )
