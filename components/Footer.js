@@ -28,7 +28,7 @@ export default function LargeWithLogoCentered({ posts, categories }) {
         bg={useColorModeValue('gray.50', 'gray.900')}
         color={useColorModeValue('gray.700', 'gray.200')}>
         <Container as={Stack} maxW={'6xl'} py={5}>
-          <SimpleGrid columns={{ base: 3, sm: 4, md: 5 }} spacing={{base: 5, md: 1}}>
+          <SimpleGrid columns={{ base: 3, sm: 4 }} spacing={{base: 5, md: 1}}>
             <Stack align={'flex-start'}>
               <ListHeader>Category</ListHeader>
               {categories.map(cat => (
@@ -62,7 +62,7 @@ export default function LargeWithLogoCentered({ posts, categories }) {
           <Stack align={'flex-start'}>
             <Wrap direction={'row'} spacing={2}>
               {["paypal", "applepay", "googlepay", "amex", "mastercard", "visa"].map(payment => (
-                <WrapItem><Image boxSize="50px" src={`/${payment}.svg`}/></WrapItem>
+                <WrapItem key={payment}><Image boxSize="50px" src={`/${payment}.svg`}/></WrapItem>
               ))}
             </Wrap>
           </Stack>

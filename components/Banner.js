@@ -8,7 +8,7 @@ export default function Banner({banner}) {
   return (
     <Flex
       w={'full'}
-      h={{ base:'28vh', sm: '70vh' }}
+      h={{ base:'28vh', md: '70vh' }}
       backgroundImage={`url(${section.images[0].url})`}
       backgroundSize='100%'
       backgroundPosition={'center center'}
