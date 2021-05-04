@@ -42,6 +42,7 @@ const getCategories = async () => {
             slug
             name
             limited_edition
+            currency
           }
         }
       }

@@ -1,7 +1,7 @@
 import {
   Box, Container, Link, SimpleGrid, Stack, Text, Flex, Tag, useColorModeValue,
   Image, useDisclosure, ModalBody, ModalFooter, Modal, ModalOverlay, ModalContent,
-  ModalHeader, ModalCloseButton, Button
+  ModalHeader, ModalCloseButton, Button, Wrap, WrapItem, Center
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import Logo from "@components/Logo"
@@ -28,7 +28,7 @@ export default function LargeWithLogoCentered({ posts, categories }) {
         bg={useColorModeValue('gray.50', 'gray.900')}
         color={useColorModeValue('gray.700', 'gray.200')}>
         <Container as={Stack} maxW={'6xl'} py={5}>
-          <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
+          <SimpleGrid columns={{ base: 3, sm: 4, md: 5 }} spacing={{base: 5, md: 1}}>
             <Stack align={'flex-start'}>
               <ListHeader>Category</ListHeader>
               {categories.map(cat => (
@@ -49,17 +49,24 @@ export default function LargeWithLogoCentered({ posts, categories }) {
             </Stack>
             <Stack align={'flex-start'}>
               <ListHeader>Contact</ListHeader>
-              <Stack direction={'row'} spacing={6}>
-                <SocialButton label={'Wechat'} onClick={onOpen}>
-                  <IoLogoWechat />
-                </SocialButton>
-                <SocialButton label={'Instagram'} href={'https://www.instagram.com/kissy_ruwen_by_amy_uk/'}>
-                  <IoLogoInstagram />
-                </SocialButton>
+              <Stack direction={'row'} spacing={2}>
+                <Image boxSize="35px" src="/wechat.svg"/>
+                <Link href={'https://www.instagram.com/kissy_ruwen_by_amy_uk/'}>
+                  <Image boxSize="35px" src="/instagram.svg"/>
+                </Link>
               </Stack>
             </Stack>
           </SimpleGrid>
         </Container>
+        <Center>
+          <Stack align={'flex-start'}>
+            <Wrap direction={'row'} spacing={2}>
+              {["paypal", "applepay", "googlepay", "amex", "mastercard", "visa"].map(payment => (
+                <WrapItem><Image boxSize="50px" src={`/${payment}.svg`}/></WrapItem>
+              ))}
+            </Wrap>
+          </Stack>
+        </Center>
         <Box py={4}>
           <Flex
             align={'center'}
@@ -91,7 +98,7 @@ export default function LargeWithLogoCentered({ posts, categories }) {
           <ModalHeader>Scan in Wechat</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Image src="/wechat.svg"/>
+            <Image src="/wechatqr.svg"/>
           </ModalBody>
 
           <ModalFooter>

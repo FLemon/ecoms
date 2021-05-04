@@ -12,21 +12,24 @@ import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
 import { loadStripe } from '@stripe/stripe-js'
 import { IoCartOutline } from "react-icons/io5"
 import S from "string"
+import { PayPalButton } from "react-paypal-button-v2";
 
 export default function Checkout(props) {
   const [cartEmpty, setCartEmpty] = useState(true)
+  const [lineItems, setLineItems] = useState([])
   const {
     totalPrice, cartCount, clearCart, cartDetails,
     addItem, incrementItem, decrementItem
   } = useShoppingCart()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cartRef = useRef()
+  const { currency } = props
 
   useEffect(() => {
     if (cartCount > 0) {
       const validateCart = async () => {
         const response = await axios.post('/api/checkout?validate_only=true', cartDetails)
-        return response.data
+        setLineItems(response.data.items)
       }
       validateCart()
     }
@@ -40,7 +43,7 @@ export default function Checkout(props) {
       }
   }
 
-  const CartItem = ({item, quantity}) => {
+  const CartItem = ({item, quantity, currency}) => {
     return (
       <>
         <Flex>
@@ -73,11 +76,11 @@ export default function Checkout(props) {
               <Spacer />
               <Stack spacing={0}>
                 <Box fontSize="12pt" color="black" align="right">
-                  {formatCurrencyString({value: item.price * quantity, currency: item.currency})}
+                  {formatCurrencyString({value: item.price * quantity, currency: currency})}
                 </Box>
                 {quantity > 1 &&
                   <Box fontSize="8pt" color="grey" align="right">
-                    {formatCurrencyString({value: item.price, currency: item.currency})} each
+                    {formatCurrencyString({value: item.price, currency: currency})} each
                   </Box>
                 }
               </Stack>
@@ -111,20 +114,64 @@ export default function Checkout(props) {
             <DrawerHeader>
               <Text>My Basket<Link onClick={clearCart} p={4} as="samp" fontSize="xs">(clear)</Link></Text>
             </DrawerHeader>
-            <Divider />
 
             <DrawerBody px="12px">
-              {Object.keys(cartDetails).map(id => <CartItem key={id} item={cartDetails[id]} quantity={cartDetails[id].quantity}/>)}
+              {Object.keys(cartDetails).map(id => (
+                <CartItem key={id} item={cartDetails[id]} quantity={cartDetails[id].quantity}
+                  currency={currency}
+                />
+              ))}
             </DrawerBody>
 
+            <Text fontSize="16pt" color="black" textAlign="right" px={5} py={2}>
+              <strong>Total: </strong>
+              {formatCurrencyString({value: totalPrice, currency: currency})}
+            </Text>
             <Divider />
             <DrawerFooter p="8px">
-              <Text px={4} fontSize="12pt" color="black"><strong>Total: </strong>{formatCurrencyString({value: totalPrice, currency: "GBP"})}</Text>
-              <Spacer />
-              <Button bg="red.300" borderRadius="lg" fontSize="14pt" onClick={toCheckout} color="white" fontWeight="bold"
-                isDisabled={cartCount === 0} _hover={{ bg:"red.500" }}>
-                Checkout
-              </Button>
+              <VStack w="full">
+                <Button w="full" h="45px" bg="red.300" borderRadius="4px" fontSize="14pt" onClick={toCheckout}
+                  color="white" fontWeight="bold" isDisabled={cartCount === 0} _hover={{ bg:"red.500" }}>
+                  Checkout
+                </Button>
+                {cartCount > 0 && (
+                  <Box w="full">
+                    <PayPalButton
+                      style={{ label: "buynow", layout: "horizontal" }}
+                      onApprove={(data, actions) => {
+                        return actions.order.capture().then(details => {
+                          window.location.href=`/?paypal_order_id=${data.orderID}`
+                        })
+                      }}
+                      options={{
+                        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+                      }}
+                      funding={{
+                        disallowed: [ "paypal.FUNDING.CREDIT" ]
+                      }}
+                      createOrder={(data, actions) => (
+                        axios.post('/api/checkout?validate_only=true', cartDetails)
+                          .then(res => {
+                            return actions.order.create({
+                              purchase_units: [{
+                                amount: {
+                                  currency: currency,
+                                  value: totalPrice / 100,
+                                  items: (res.data.items).map(item => ({
+                                    unit_amount: item.price_data.unit_amount / 100,
+                                    quantity: item.quantity,
+                                    name: item.price_data.product_data.name,
+                                    description: item.price_data.product_data.description
+                                  }))
+                                }
+                              }]
+                            })
+                          })
+                      )}
+                    />
+                  </Box>
+                )}
+              </VStack>
             </DrawerFooter>
           </DrawerContent>
         </DrawerOverlay>

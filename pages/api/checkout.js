@@ -2,8 +2,6 @@ import { validateCartItems } from 'use-shopping-cart/src/serverUtil'
 import Stripe from 'stripe'
 import DataClient from '@components/DataClient'
 
-const stripe = Stripe(process.env.STRIPE_KEY_SECRET);
-
 export default async (req, res) => {
   const { validate_only } = req.query
   const cartItems = req.body
@@ -12,9 +10,10 @@ export default async (req, res) => {
 
   if (line_items.length === 0 || validate_only) {
     res.status = 200
-    res.json({ validated: line_items.length })
+    res.json({ validated: line_items.length, items: line_items })
   } else {
-    const callbackUrl = `${req.headers.origin}/shop?stripe_session_id={CHECKOUT_SESSION_ID}`
+    const stripe = Stripe(process.env.STRIPE_KEY_SECRET);
+    const callbackUrl = `${req.headers.origin}?stripe_session_id={CHECKOUT_SESSION_ID}`
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items,

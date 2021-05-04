@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/icons';
 import Logo from "@components/Logo"
 import Checkout from "@components/Checkout"
+import CheckoutAlert from "@components/CheckoutAlert"
 import S from "string"
 
 export default function WithSubnavigation(props) {
@@ -62,8 +63,9 @@ export default function WithSubnavigation(props) {
           </Flex>
         </Flex>
 
-        <Checkout />
+        <Checkout currency={props.categories[0].products[0].currency}/>
       </Flex>
+      <CheckoutAlert />
 
       <Collapse in={isOpen} animateOpacity>
         <MobileNav navItems={navItems}/>
