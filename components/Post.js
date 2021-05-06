@@ -10,13 +10,11 @@ const Section = ({section}) => {
   return (
     <Center px={10} py={5}>
       <Stack direction="column" w="full">
-        <Center pt={2}>
-          <Heading>{S(section.header).humanize().titleCase().s}</Heading>
+        <Center><Heading as="h2">{S(section.header).humanize().titleCase().s}</Heading></Center>
+        <Box fontSize="2xl">
           <ReactMarkdown renderers={ChakraUIRenderer()} source={section.content} escapeHtml={false} />
-        </Center>
-        <Center>
-          <Carousel slides={section.images}/>
-        </Center>
+        </Box>
+        {section.images.length && (<Center><Carousel slides={section.images}/></Center>)}
       </Stack>
     </Center>
   )
