@@ -32,8 +32,7 @@ export default function Collections({categories}) {
   const ImageBox = ({cat}) => {
     return (
       <Image
-        w={{ base: "full", sm: "60%" }} rounded={'lg'}
-        objectFit={'cover'} w="600px" h="450px"
+        rounded={'lg'} objectFit={'cover'} w="600px" h="450px"
         src={cat.images[0] ? cat.images[0].url : '/product-fallback.jpeg'}
       />
     )
