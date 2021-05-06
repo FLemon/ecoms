@@ -46,6 +46,8 @@ export default function ProductSimple({ product }) {
             width={282}
             objectFit={'cover'}
             src={imageSrc}
+            alt={product.name}
+            fallbackSrc="/fallback.jpg"
           />
           {product.limited_edition && <Text pos="relative" top="120px" color={'pink.500'} fontSize={'sm'} fontWeight="bold"
             textTransform={'uppercase'} >
