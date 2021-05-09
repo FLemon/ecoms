@@ -12,7 +12,7 @@ export default function Layout({categories, posts, children}) {
         <title>Kissy ruwen UK 如吻</title>
         <meta name="description" content="comfort styled lingerie and underwear" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta charset="UTF-8" />
+        <meta charSet="UTF-8" />
         <link rel="icon" href="/favicon.ico" />
         {process.env.NODE_ENV === "producion" && <GaTracking />}
       </Head>
