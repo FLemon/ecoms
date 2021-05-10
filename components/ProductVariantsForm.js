@@ -39,7 +39,6 @@ export default function ProductVariantsForm({productVariants, product, slideInde
   const [color, setColor] = useState(currentVariant.color)
   const [size, setSize] = useState(currentVariant.size)
   const { cartCount, cartDetails, addItem, incrementItem, decrementItem } = useShoppingCart()
-  const fallbackImage = "/product-fallback.jpeg"
   const carouselContext = useContext(CarouselContext)
 
   const getNewVariant = () => (

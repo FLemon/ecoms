@@ -8,7 +8,7 @@ import { CarouselProvider } from "pure-react-carousel"
 
 export default function ProductDetails(props) {
   const { slideIndex, images, product, productVariants, posts } = props
-  const slides = images.length ? images : new Array({url: fallbackImage})
+  const slides = images.length ? images : new Array({url: "/fallback.jpeg"})
 
   if (productVariants.length === 0) {
     return (

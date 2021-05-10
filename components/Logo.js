@@ -4,7 +4,7 @@ export default function Logo(props) {
   return (
     <Center w={{base: "50vw", sm: "10vw", md: "15vw"}}>
       <Link href="/" _hover={{}}>
-        <Image src="/kissy-logo.svg" alt="kissy ruwen" fallbackSrc="/fallback.jpg"/>
+        <Image src="/kissy-logo.svg" alt="kissy ruwen" fallbackSrc="/kissy-logo.svg"/>
       </Link>
     </Center>
   )

@@ -33,7 +33,7 @@ export default function Collections({categories}) {
     return (
       <Image
         rounded={'lg'} objectFit={'cover'} w="600px" h="450px"
-        src={cat.images[0] ? cat.images[0].url : '/product-fallback.jpeg'}
+        src={cat.images[0] ? cat.images[0].url : '/fallback.jpeg'}
       />
     )
   }

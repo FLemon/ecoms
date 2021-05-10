@@ -5,7 +5,7 @@ import { formatCurrencyString } from 'use-shopping-cart'
 import S from "string"
 
 export default function ProductSimple({ product }) {
-  const imageSrc = product.images && product.images[0] && product.images[0].url || "/product-fallback.jpeg"
+  const imageSrc = product.images && product.images[0] && product.images[0].url || "/fallback.jpeg"
   return (
     <Center py={8}>
       <Box
