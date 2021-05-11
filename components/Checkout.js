@@ -134,7 +134,7 @@ export default function Checkout(props) {
                   color="white" fontWeight="bold" isDisabled={cartCount === 0} _hover={{ bg:"red.500" }}>
                   Checkout
                 </Button>
-                {cartCount > 0 && (
+                {cartCount > 0 && currency && (
                   <Box w="full">
                     <PayPalButton
                       style={{ label: "buynow", layout: "horizontal" }}
@@ -143,8 +143,10 @@ export default function Checkout(props) {
                           window.location.href=`/?paypal_order_id=${data.orderID}`
                         })
                       }}
+                      currency={currency}
                       options={{
                         clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+                        currency: currency
                       }}
                       funding={{
                         disallowed: [ "paypal.FUNDING.CREDIT" ]
@@ -155,7 +157,7 @@ export default function Checkout(props) {
                             return actions.order.create({
                               purchase_units: [{
                                 amount: {
-                                  currency: currency,
+                                  currency_code: currency,
                                   value: totalPrice / 100,
                                   items: (res.data.items).map(item => ({
                                     unit_amount: item.price_data.unit_amount / 100,
