@@ -120,12 +120,17 @@ const getInventories = async () => {
   const inventories = []
   data.productVariants.forEach(pv => {
     const allSizeVariants = pv.sizes.filter(s => s.quantity > 0).map(size => ({
-      name: S(pv.product.slug).humanize().titleCase().s,
-      sku: `${pv.slug}-${size.slug}`,
+      id: `${pv.slug}-${size.slug}`,
       price: (pv.price || pv.product.price)*100,
+      currency: pv.product.currency.toUpperCase(),
+      name: S(pv.product.slug).humanize().titleCase().s,
       image: pv.images[0] && pv.images[0].url,
       description: `colour: ${pv.colour.slug}, size: ${size.slug}`,
-      currency: pv.product.currency.toUpperCase()
+      product_data: {
+        metadata: {
+          sku: `${pv.slug}-${size.slug}`,
+        }
+      }
     }))
     inventories.push(...allSizeVariants)
   })

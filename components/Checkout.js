@@ -18,8 +18,7 @@ export default function Checkout(props) {
   const [cartEmpty, setCartEmpty] = useState(true)
   const [lineItems, setLineItems] = useState([])
   const {
-    totalPrice, cartCount, clearCart, cartDetails,
-    addItem, incrementItem, decrementItem
+    totalPrice, cartCount, clearCart, cartDetails, incrementItem, decrementItem
   } = useShoppingCart()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cartRef = useRef()
@@ -159,13 +158,23 @@ export default function Checkout(props) {
                                 amount: {
                                   currency_code: currency,
                                   value: totalPrice / 100,
-                                  items: (res.data.items).map(item => ({
-                                    unit_amount: item.price_data.unit_amount / 100,
-                                    quantity: item.quantity,
-                                    name: item.price_data.product_data.name,
-                                    description: item.price_data.product_data.description
-                                  }))
-                                }
+                                  breakdown: {
+                                    item_total: {
+                                      currency_code: currency,
+                                      value: totalPrice / 100
+                                    }
+                                  }
+                                },
+                                items: (res.data.items).map(item => ({
+                                  unit_amount: {
+                                    currency_code: currency,
+                                    value: item.price_data.unit_amount / 100
+                                  },
+                                  quantity: item.quantity,
+                                  name: item.price_data.product_data.name,
+                                  description: item.price_data.product_data.description,
+                                  sku: item.price_data.product_data.metadata.sku
+                                }))
                               }]
                             })
                           })
