@@ -13,7 +13,7 @@ export default function CheckoutAlert(props) {
   const router = useRouter()
   const { clearCart, cartCount } = useShoppingCart()
   const [alert, setAlert] = useState({})
-  const [stripeSessionId, setStripeSessionId] = useState(null)
+  const [stripeSessionId, setStripeSessionId] = useState(router.query.stripeSessionId)
 
   useEffect(() => {
     const newAlert = {}
