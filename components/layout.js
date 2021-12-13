@@ -21,7 +21,7 @@ export default function Layout({categories, posts, children}) {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="kissy ruwen bras" />
         <meta property="og:url" content="https://kissyruwen.uk" />
-        {process.env.NODE_ENV === "producion" && <GaTracking />}
+        {process.env.NEXT_PUBLIC_NODE_ENV === "producion" && <GaTracking />}
       </Head>
 
       <main>

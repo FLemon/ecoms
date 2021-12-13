@@ -15,7 +15,7 @@ export default async (req, res) => {
     const stripe = Stripe(process.env.STRIPE_KEY_SECRET);
     const callbackUrl = `${req.headers.origin}?stripe_session_id={CHECKOUT_SESSION_ID}`
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ["card", "wallets"],
       line_items,
       mode: "payment",
       success_url: callbackUrl,
