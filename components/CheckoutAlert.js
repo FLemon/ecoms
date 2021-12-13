@@ -13,6 +13,7 @@ export default function CheckoutAlert(props) {
   const router = useRouter()
   const { clearCart, cartCount } = useShoppingCart()
   const [alert, setAlert] = useState({})
+  const [stripeSessionId, setStripeSessionId] = useState(null)
 
   useEffect(() => {
     const newAlert = {}
@@ -65,7 +66,7 @@ export default function CheckoutAlert(props) {
       }
     }
 
-    const stripeSessionId = router.query.stripe_session_id
+    setStripeSessionId(router.query.stripe_session_id)
     const paypalOrderId = router.query.paypal_order_id
     if (stripeSessionId) {
       fetchStripeCheckout(stripeSessionId)
