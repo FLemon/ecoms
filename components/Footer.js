@@ -50,7 +50,6 @@ export default function LargeWithLogoCentered({ posts, categories }) {
             <Stack align={'flex-start'}>
               <ListHeader>Contact</ListHeader>
               <Stack direction={'row'} spacing={2}>
-                <Image cursor={'pointer'} onClick={onOpen} boxSize="35px" src="/wechat.svg"/>
                 <Link href={'https://www.instagram.com/kissy_ruwen_by_amy_uk/'}>
                   <Image boxSize="35px" src="/instagram.svg"/>
                 </Link>
