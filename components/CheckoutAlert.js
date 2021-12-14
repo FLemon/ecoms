@@ -66,10 +66,10 @@ export default function CheckoutAlert(props) {
       }
     }
 
-    setStripeSessionId(router.query.stripe_session_id)
     const paypalOrderId = router.query.paypal_order_id
-    if (stripeSessionId) {
-      fetchStripeCheckout(stripeSessionId)
+    if (router.query.stripe_session_id) {
+      setStripeSessionId(router.query.stripe_session_id)
+      fetchStripeCheckout(router.query.stripe_session_id)
     } else if (paypalOrderId) {
       fetchPaypalOrder(paypalOrderId)
     } else {}
