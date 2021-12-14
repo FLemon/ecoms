@@ -2,7 +2,7 @@ import Head from 'next/head'
 
 import Header from '@components/Header'
 import Footer from '@components/Footer'
-import { GaTracking } from '@components/GaTracking'
+import GaTracking from '@components/GaTracking'
 import { Box } from "@chakra-ui/react"
 
 export default function Layout({categories, posts, children}) {
@@ -21,7 +21,7 @@ export default function Layout({categories, posts, children}) {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="kissy ruwen bras" />
         <meta property="og:url" content="https://kissyruwen.uk" />
-        {process.env.NEXT_PUBLIC_NODE_ENV === "producion" && <GaTracking />}
+        <GaTracking />
       </Head>
 
       <main>

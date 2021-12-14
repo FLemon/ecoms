@@ -1,5 +1,4 @@
-const GaTracking = () => {
-  console.log('tracing')
+export default function GaTracking(props) {
   return (
     <>
       <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}/>
@@ -15,5 +14,3 @@ const GaTracking = () => {
     </>
   )
 }
-
-export { GaTracking }
