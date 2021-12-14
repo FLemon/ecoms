@@ -117,7 +117,7 @@ export default function ProductVariantsForm({productVariants, product, slideInde
           </Button>
         </HStack>
       </HStack>
-      <SizeGuide posts={posts}/>
+      {posts && <SizeGuide posts={posts}/>}
     </Box>
   )
 }
