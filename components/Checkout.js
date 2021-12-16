@@ -23,21 +23,25 @@ export default function Checkout(props) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cartRef = useRef()
   const { currency } = props
+  const [deliveryPrice, setDeliveryPrice] = useState(null)
+  const orderTotalPrice = totalPrice + deliveryPrice
 
   useEffect(() => {
-    if (cartCount > 0) {
-      const validateCart = async () => {
-        const response = await axios.post('/api/checkout?validate_only=true', cartDetails)
-        setLineItems(response.data.items)
-      }
-      validateCart()
+    const validateCart = async () => {
+      const response = await axios.post('/api/checkout?validate_only=true', { cartItems: cartDetails, cartCount })
+      setLineItems(response.data.items)
+      const deliveryItem = response.data.items.filter(i => (
+        i.price_data && i.price_data.product_data && i.price_data.product_data.name === "Delivery"
+      ))[0]
+      setDeliveryPrice(deliveryItem ? deliveryItem.price_data.unit_amount : 0)
     }
+    validateCart()
   }, [cartDetails])
 
   const toCheckout = async (e) => {
     const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
       if (cartCount > 0) {
-        const response = await axios.post('/api/checkout', cartDetails)
+        const response = await axios.post('/api/checkout', { cartItems: cartDetails, cartCount })
         await stripe.redirectToCheckout({ sessionId: response.data.id });
       }
   }
@@ -122,9 +126,15 @@ export default function Checkout(props) {
               ))}
             </DrawerBody>
 
+            { deliveryPrice !== null && (
+              <Text fontSize="12pt" color="black" textAlign="right" px={5} py={2}>
+                <strong>Delivery: </strong>
+                {formatCurrencyString({value: deliveryPrice, currency: currency})}
+              </Text>
+            )}
             <Text fontSize="16pt" color="black" textAlign="right" px={5} py={2}>
               <strong>Total: </strong>
-              {formatCurrencyString({value: totalPrice, currency: currency})}
+              {formatCurrencyString({value: orderTotalPrice, currency: currency})}
             </Text>
             <Divider />
             <DrawerFooter p="8px">
@@ -157,11 +167,11 @@ export default function Checkout(props) {
                               purchase_units: [{
                                 amount: {
                                   currency_code: currency,
-                                  value: totalPrice / 100,
+                                  value: orderTotalPrice / 100,
                                   breakdown: {
                                     item_total: {
                                       currency_code: currency,
-                                      value: totalPrice / 100
+                                      value: orderTotalPrice / 100
                                     }
                                   }
                                 },
