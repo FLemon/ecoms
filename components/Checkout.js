@@ -13,6 +13,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import { IoCartOutline } from "react-icons/io5"
 import S from "string"
 import { PayPalButton } from "react-paypal-button-v2";
+import GaTrackingEvent from '@components/GaTrackingEvent'
 
 export default function Checkout(props) {
   const [cartEmpty, setCartEmpty] = useState(true)
@@ -39,6 +40,7 @@ export default function Checkout(props) {
   }, [cartDetails])
 
   const toCheckout = async (e) => {
+    GaTrackingEvent.stripeStarted()
     const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
       if (cartCount > 0) {
         const response = await axios.post('/api/checkout', { cartItems: cartDetails, cartCount })
@@ -146,9 +148,13 @@ export default function Checkout(props) {
                 {cartCount > 0 && currency && (
                   <Box w="full">
                     <PayPalButton
+                      onCancel={data => {
+                        return GaTrackingEvent.paypalVoided(data.orderID)
+                      }}
                       style={{ label: "buynow", layout: "horizontal" }}
                       onApprove={(data, actions) => {
                         return actions.order.capture().then(details => {
+                          GaTrackingEvent.paypalSucceed(data.orderID)
                           window.location.href=`/?paypal_order_id=${data.orderID}`
                         })
                       }}
@@ -160,8 +166,9 @@ export default function Checkout(props) {
                       funding={{
                         disallowed: [ "paypal.FUNDING.CREDIT" ]
                       }}
-                      createOrder={(data, actions) => (
-                        axios.post('/api/checkout?validate_only=true', cartDetails)
+                      createOrder={(data, actions) => {
+                        GaTrackingEvent.paypalStarted()
+                        return axios.post('/api/checkout?validate_only=true', cartDetails)
                           .then(res => {
                             return actions.order.create({
                               purchase_units: [{
@@ -188,7 +195,7 @@ export default function Checkout(props) {
                               }]
                             })
                           })
-                      )}
+                      }}
                     />
                   </Box>
                 )}

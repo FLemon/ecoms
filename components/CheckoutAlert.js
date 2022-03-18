@@ -8,6 +8,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import useSWR from 'swr'
 import axios from "axios"
 import S from "string"
+import GaTrackingEvent from '@components/GaTrackingEvent'
 
 export default function CheckoutAlert(props) {
   const router = useRouter()
@@ -24,11 +25,13 @@ export default function CheckoutAlert(props) {
         const { paymentStatus } = res.data
         switch(paymentStatus) {
           case "paid":
+            GaTrackingEvent.stripeSucceed(sessionId)
             newAlert.status = "success"
             newAlert.message = "thank you for your payment"
             clearCart()
             break
           case "unpaid":
+            GaTrackingEvent.stripeVoided(sessionId)
             newAlert.status = "warning"
             newAlert.message = "payment pending"
             break
