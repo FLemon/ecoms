@@ -26,7 +26,7 @@ export default function Layout({categories, posts, children}) {
 
       <main>
         <Header categories={categories}/>
-        <Box pt="60px">{children}</Box>
+        <Box pt="110px">{children}</Box>
       </main>
 
       <Footer categories={categories} posts={posts}/>
