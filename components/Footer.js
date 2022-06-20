@@ -7,7 +7,6 @@ import { ReactNode } from 'react';
 import Logo from "@components/Logo"
 import SocialButton from "@components/SocialButton"
 import S from "string"
-import { IoLogoInstagram, IoLogoWechat } from "react-icons/io5"
 
 const ListHeader = ({ children }) => {
   return (
@@ -52,6 +51,9 @@ export default function LargeWithLogoCentered({ posts, categories }) {
               <Stack direction={'row'} spacing={2}>
                 <Link href={'https://www.instagram.com/kissy_ruwen_by_amy_uk/'}>
                   <Image boxSize="35px" src="/instagram.svg"/>
+                </Link>
+                <Link href={'mailto:info@kissyrw.co.uk'}>
+                  <Image boxSize="35px" src="/email.svg"/>
                 </Link>
               </Stack>
             </Stack>

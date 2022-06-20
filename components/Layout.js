@@ -13,14 +13,14 @@ export default function Layout({categories, posts, children}) {
         <meta charSet="UTF-8" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.ico" />
-        <link rel="canonical" href="https://kissyruwen.uk" />
+        <link rel="canonical" href="https://kissyrw.co.uk" />
         <meta name="description" content="styled and comfortable lingerie and underwear" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="og:title" property="og:title" content="affordable styled lingerie and underwear shop" />
         <meta name="og:description" property="og:description" content="luxury yet affordable underwears for any mood" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="kissy ruwen bras" />
-        <meta property="og:url" content="https://kissyruwen.uk" />
+        <meta property="og:url" content="https://kissyrw.co.uk" />
         <GaTracking />
       </Head>
 
